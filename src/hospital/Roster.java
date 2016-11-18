@@ -87,6 +87,37 @@ public class Roster {
 		}
 	}
 	
+        public void readRequirements (char department,int i ,int shift) //om de requirements in te lezen
+        {
+            reader r = new reader();
+            r.readCaseC();
+            
+            this.department = department;
+            if(department == 'A'){
+               
+                   int [] reqA = r.getReqA();
+                   req [0][shift] = reqA[i];
+               
+            }
+            if(department == 'B'){
+               
+                   int [] reqB = r.getReqB();
+                   req [0][shift] = reqB[i];
+               
+            }
+            if(department == 'C'){
+               
+                   int [] reqC = r.getReqC();
+                   req [0][shift] = reqC[i];
+               
+            }
+            if(department == 'D'){
+               
+                   int [] reqD = r.getReqD();
+                   req [0][shift] = reqD[i];
+               
+            }
+        }
 	public void readShiftSystem()
 	{
 		//numberOfShifts= db.getNumberOfShifts(department)-1;// -1 opdat de free shift niet meegerekend zou worden
@@ -109,30 +140,8 @@ public class Roster {
                 startShift = r.getStartShiftD();
             }
             
-            if(department == 'A'){
-               for(int i = 0; i < numberOfShifts; i++){
-                   int [] reqA = r.getReqA();
-                   req [0][i] = reqA[i];
-               }
-            }
-            if(department == 'B'){
-               for(int i = 0; i < numberOfShifts; i++){
-                   int [] reqB = r.getReqB();
-                   req [0][i] = reqB[i];
-               }
-            }
-            if(department == 'C'){
-               for(int i = 0; i < numberOfShifts; i++){
-                   int [] reqC = r.getReqC();
-                   req [0][i] = reqC[i];
-               }
-            }
-            if(department == 'D'){
-               for(int i = 0; i < numberOfShifts; i++){
-                   int [] reqD = r.getReqD();
-                   req [0][i] = reqD[i];
-               }
-            }
+            
+            
             
             //System.out.println("req: "+req[0][0]);
             
@@ -150,61 +159,61 @@ public class Roster {
 	int d=0; // dag 1
         //System.out.println(numberOfShifts);
         //System.out.println(lengthOfShift);
-	for (int s = 0; s<numberOfShifts ;s++)
+	for (int s = 1; s<=numberOfShifts ;s++)
 	{
+            
+            // de requierements zijn ingevuld dus als de 2e cel van req =! 0 gaat hij overspringen en krijg je het foute getal.
+            // maar wat betekenen die requieremnts? Wat doen die daar??
 		if ((startShift[s] >= 3) && (startShift[s] < 9) && (req[d][0] == 0))			// If the shifts start at 3 am or 6 am we define an early shift (and there is no other shift defined as an early shift)
 		{	
 			shift[s] = 0;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}	
 		else if ((startShift[s] >= 3) && (startShift[s] < 9) && (req[d][0] != 0))
 		{	
 			shift[s] = 1;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}				
 		if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] == 0))			// If the shifts start at 9 am we define a day shift (and there is no other shift defined as a day shift)
 		{	
 			shift[s] = 1;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}			
 		else if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] != 0))
 		{	
 			shift[s] = 2;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}			
-		if ((startShift[s] >= 12) && (startShift[s] < 18) && (req[d][2] == 0))		// If the shifts start at 12 am, 3 pm or 6 pm we define a late shift (and there is no other shift defined as a late shift)
+		if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] == 0))		// If the shifts start at 12 am, 3 pm or 6 pm we define a late shift (and there is no other shift defined as a late shift)
 		{	
 			shift[s] = 2;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
-		else if ((startShift[s] >= 12) && (startShift[s] < 18) && (req[d][2] != 0))
+		else if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] != 0))
 		{			
 			shift[s] = 3;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
-		if ((startShift[s] >= 18) && (startShift[s] < 21) && (req[d][3] == 0))		// If the shifts start at 12 am, 3 pm or 6 pm we define a late shift (and there is no other shift defined as a late shift)
+		if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][3] == 0))			// If the shifts start at 9 pm or 12 pm we define a night shift (and there is no other shift defined as a night shift)
 		{	
 			shift[s] = 3;
+                        readRequirements(department,s,shift[s]);
 			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
-		else if ((startShift[s] >= 18) && (startShift[s] < 21) && (req[d][3] != 0))
-		{			
-			shift[s] = 4;
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
-		}
-		if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][4] == 0))			// If the shifts start at 9 pm or 12 pm we define a night shift (and there is no other shift defined as a night shift)
-		{	
-			shift[s] = 4;
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
-		}
-		else if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][4] != 0))
+		else if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][3] != 0))
 			System.out.println("Read problem shifts input");
 	}
-	shift[numberOfShifts+1] = 4;
-	System.out.println("free day: usershift: "+ (numberOfShifts+1) + " is now java shift: " + shift[(numberOfShifts+1)]);
+	shift[0] = 4;
+	System.out.println("free day: usershift: is now java shift: " + shift[0]);
 	// According to the input data, the day off (code 0) is associated with shift (numberOfShifts-1) (the free shift). 
 
-	for (int s = 0; s < numberOfShifts; s++)	// Determine the length of the shifts
+	for (int s = 1; s <= numberOfShifts; s++)	// Determine the length of the shifts
 	{	if (startShift[s] + lengthOfShift < 24)
 			{
 			hrs[shift[s]] = lengthOfShift;
@@ -219,14 +228,14 @@ public class Roster {
 			}
 	}
 
-	hrs[shift[numberOfShifts+1]] = 0; // The free shift contains no duty time
+	hrs[shift[0]] = 0; // The free shift contains no duty time
 
 	for (d = 0; d <DAYS; d++)	// Copy staffing requirements to the other days								// Copy staffing requirements to the other days
-	{	for (int s = 0; s < numberOfShifts; s++)							
+	{	for (int s = 1; s <= numberOfShifts; s++)							
 		{
-			req[d][shift[s]-1] = req[0][shift[s]-1];
+			req[d][shift[s]] = req[0][shift[s]];
 			System.out.println("s = "+s+"shift[s]= "+ shift[s]);
-			System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]-1] + " number of nurses");
+			System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]] + " number of nurses");
 		}
 	}
 	

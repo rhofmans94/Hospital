@@ -31,6 +31,8 @@ public class reader {
     private int budgetC;
     private int budgetD;
     
+    //private int [] start;
+    
     public reader(){
         
     }
@@ -59,21 +61,29 @@ public class reader {
             shifts = Integer.parseInt(lines[1][0]);
             //System.out.print("shifts: "+shifts + "\n");
             
+            /* De array zo invullen dan start het op 1
+            for (int i=1; i<=shifts; i++)
+            {
+              start[i]=Integer.parseInt(lines[(3+i)][0]);   
+            }
+            */
                     
-            setStartShiftA(new int [] {Integer.parseInt(lines[4][0]), Integer.parseInt(lines[5][0]),Integer.parseInt(lines[6][0])});
-            setStartShiftB(new int [] {Integer.parseInt(lines[4][1]), Integer.parseInt(lines[5][1]),Integer.parseInt(lines[6][1])});
-            setStartShiftC(new int [] {Integer.parseInt(lines[4][2]), Integer.parseInt(lines[5][2]),Integer.parseInt(lines[6][2])});
-            setStartShiftD(new int [] {Integer.parseInt(lines[4][3]), Integer.parseInt(lines[5][3]),Integer.parseInt(lines[6][3])});
+            setStartShiftA(new int [] {0,Integer.parseInt(lines[4][0]), Integer.parseInt(lines[5][0]),Integer.parseInt(lines[6][0])});
+            setStartShiftB(new int [] {0,Integer.parseInt(lines[4][1]), Integer.parseInt(lines[5][1]),Integer.parseInt(lines[6][1])});
+            setStartShiftC(new int [] {0,Integer.parseInt(lines[4][2]), Integer.parseInt(lines[5][2]),Integer.parseInt(lines[6][2])});
+            setStartShiftD(new int [] {0,Integer.parseInt(lines[4][3]), Integer.parseInt(lines[5][3]),Integer.parseInt(lines[6][3])});
             
-            setReqA(new int [] {Integer.parseInt(lines[9][0]), Integer.parseInt(lines[10][0]),Integer.parseInt(lines[11][0])});
-            setReqB(new int [] {Integer.parseInt(lines[9][1]), Integer.parseInt(lines[10][1]),Integer.parseInt(lines[11][1])});
-            setReqC(new int [] {Integer.parseInt(lines[9][2]), Integer.parseInt(lines[10][2]),Integer.parseInt(lines[11][2])});
-            setReqD(new int [] {Integer.parseInt(lines[9][3]), Integer.parseInt(lines[10][3]),Integer.parseInt(lines[11][3])});
+            setReqA(new int [] {0,Integer.parseInt(lines[9][0]), Integer.parseInt(lines[10][0]),Integer.parseInt(lines[11][0])});
+            setReqB(new int [] {0,Integer.parseInt(lines[9][1]), Integer.parseInt(lines[10][1]),Integer.parseInt(lines[11][1])});
+            setReqC(new int [] {0,Integer.parseInt(lines[9][2]), Integer.parseInt(lines[10][2]),Integer.parseInt(lines[11][2])});
+            setReqD(new int [] {0,Integer.parseInt(lines[9][3]), Integer.parseInt(lines[10][3]),Integer.parseInt(lines[11][3])});
             
             budgetA = Integer.parseInt(lines[14][0]);
             budgetB = Integer.parseInt(lines[14][1]);
             budgetC = Integer.parseInt(lines[14][2]);
             budgetD = Integer.parseInt(lines[14][3]);
+            
+            //System.out.println(start[0] + "" + start[1] +""+start[2]);
             
             //System.out.print(getStartShiftA() + " "+ getStartShiftB() +" "+ getStartShiftC() +" "+ getStartShiftD() + "\n");
             //System.out.print(getReqA() +" "+ getReqB() +" "+ getReqC()+" "+ getReqD()+"\n");
