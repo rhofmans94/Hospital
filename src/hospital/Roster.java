@@ -133,6 +133,9 @@ public class Roster {
                    req [0][i] = reqD[i];
                }
             }
+            
+            //System.out.println("req: "+req[0][0]);
+            
             //System.out.println(startShift[2]);
 		// Early shift		Code 0
 		// Day shift		Code 1
@@ -145,9 +148,9 @@ public class Roster {
 		
 	
 	int d=0; // dag 1
-        System.out.println(numberOfShifts);
-        System.out.println(lengthOfShift);
-	for (int s = 0; s<=numberOfShifts ;s++)
+        //System.out.println(numberOfShifts);
+        //System.out.println(lengthOfShift);
+	for (int s = 0; s<numberOfShifts ;s++)
 	{
 		if ((startShift[s] >= 3) && (startShift[s] < 9) && (req[d][0] == 0))			// If the shifts start at 3 am or 6 am we define an early shift (and there is no other shift defined as an early shift)
 		{	
@@ -197,11 +200,11 @@ public class Roster {
 		else if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][4] != 0))
 			System.out.println("Read problem shifts input");
 	}
-	shift[0] = numberOfShifts;
-	System.out.println("usershift: " + 0 + " that starts at: " + startShift[0]+ " is now java shift: " + shift[0]);
+	shift[numberOfShifts+1] = 4;
+	System.out.println("free day: usershift: "+ (numberOfShifts+1) + " is now java shift: " + shift[(numberOfShifts+1)]);
 	// According to the input data, the day off (code 0) is associated with shift (numberOfShifts-1) (the free shift). 
 
-	for (int s = 1; s <= numberOfShifts; s++)	// Determine the length of the shifts
+	for (int s = 0; s < numberOfShifts; s++)	// Determine the length of the shifts
 	{	if (startShift[s] + lengthOfShift < 24)
 			{
 			hrs[shift[s]] = lengthOfShift;
@@ -216,14 +219,14 @@ public class Roster {
 			}
 	}
 
-	hrs[shift[0]] = 0; // The free shift contains no duty time
+	hrs[shift[numberOfShifts+1]] = 0; // The free shift contains no duty time
 
 	for (d = 0; d <DAYS; d++)	// Copy staffing requirements to the other days								// Copy staffing requirements to the other days
-	{	for (int s = 1; s <= numberOfShifts; s++)							
+	{	for (int s = 0; s < numberOfShifts; s++)							
 		{
-			req[d][shift[s]] = req[0][shift[s]];
+			req[d][shift[s]-1] = req[0][shift[s]-1];
 			System.out.println("s = "+s+"shift[s]= "+ shift[s]);
-			System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]] + " number of nurses");
+			System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]-1] + " number of nurses");
 		}
 	}
 	
@@ -232,24 +235,4 @@ public class Roster {
 	
 	}
         
-        public void readPersonnelCharacteristics()
-	{
-		////System.out.println("Number of Nurses: " + numberOfNurses);
-
-		for (int n=0;n<numberOfNursesType1;n++)
-		{
-			nurseEmploymentRate[n]=(double)db.getArrayNurse(n).getEmploymentRate()/100;	
-			nurseType[n]=db.getArrayNurse(n).getType();
-			////System.out.println("nurseID: " + db.getArrayNurse(n).getNurseID() +" nurseEmploymentRate: " + db.getArrayNurse(n).getEmploymentRate() + " APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + nurseType[n]  ); 
-		}
-		for (int n=numberOfNursesType1;n<numberOfNurses;n++)
-		{
-			nurseEmploymentRate[n]=(double)db.getArrayNurse(n).getEmploymentRate()/100;	
-			nurseType[n]=db.getArrayNurse(n).getType();
-			////System.out.println("nurseID: " + db.getArrayNurse(n).getNurseID() +" nurseEmploymentRate: " + db.getArrayNurse(n).getEmploymentRate() + " APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + nurseType[n]  ); 
-		}
-		////System.out.println("_________________________end readPersonnelCharacteristics_____________________");
-	}
-	
- 
 }
