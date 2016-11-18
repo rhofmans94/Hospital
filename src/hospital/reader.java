@@ -39,7 +39,8 @@ public class reader {
 
         CSVReader reader;
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\C input.csv"));
             String[][] lines= new String[20][20];
             String [] nextLine;
         int lineNumber = 0;
@@ -54,9 +55,9 @@ public class reader {
            }
         
             length = Integer.parseInt(lines[1][1]);
-            System.out.print("length: "+length + "\n");
+            //System.out.print("length: "+length + "\n");
             shifts = Integer.parseInt(lines[1][0]);
-            System.out.print("shifts: "+shifts + "\n");
+            //System.out.print("shifts: "+shifts + "\n");
             
                     
             setStartShiftA(new int [] {Integer.parseInt(lines[4][0]), Integer.parseInt(lines[5][0]),Integer.parseInt(lines[6][0])});
@@ -74,9 +75,9 @@ public class reader {
             budgetC = Integer.parseInt(lines[14][2]);
             budgetD = Integer.parseInt(lines[14][3]);
             
-            System.out.print(getStartShiftA() + " "+ getStartShiftB() +" "+ getStartShiftC() +" "+ getStartShiftD() + "\n");
-            System.out.print(getReqA() +" "+ getReqB() +" "+ getReqC()+" "+ getReqD()+"\n");
-            System.out.print(budgetA +" "+budgetB+" "+budgetC+" "+budgetD+"\n");
+            //System.out.print(getStartShiftA() + " "+ getStartShiftB() +" "+ getStartShiftC() +" "+ getStartShiftD() + "\n");
+            //System.out.print(getReqA() +" "+ getReqB() +" "+ getReqC()+" "+ getReqD()+"\n");
+            //System.out.print(budgetA +" "+budgetB+" "+budgetC+" "+budgetD+"\n");
             
                
      }
