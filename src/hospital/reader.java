@@ -40,6 +40,7 @@ public class reader {
     private int minConsAss;
     private int maxConsAss;
     private String weekend;
+    private int weekendNr;
     private int [] minConsecPerShiftType;
     private int [] maxConsecPerShiftType;
     private int [] minNumberOfAssPerShiftMonth;
@@ -180,7 +181,8 @@ public class reader {
             setMinConsAss(Integer.parseInt(lines[7][0]));
             setMaxConsAss(Integer.parseInt(lines[7][1]));
             setWeekend(lines[26][0]);
-            System.out.println(minAss +" "+ maxAss+" "+minConsAss+" "+maxConsAss+" "+weekend);
+            setWeekendNr(Integer.parseInt(lines[27][0]));
+            System.out.println(minAss +" "+ maxAss+" "+minConsAss+" "+maxConsAss+" "+weekend+" "+getWeekendNr());
             
             int s = getShifts();
             System.out.println(s); //s=0 hoe haal je aantal shiften op??
@@ -583,6 +585,20 @@ public class reader {
      */
     public void setMaxNumberOfAssPerShiftMonth(int[] maxNumberOfAssPerShiftMonth) {
         this.maxNumberOfAssPerShiftMonth = maxNumberOfAssPerShiftMonth;
+    }
+
+    /**
+     * @return the weekendNr
+     */
+    public int getWeekendNr() {
+        return weekendNr;
+    }
+
+    /**
+     * @param weekendNr the weekendNr to set
+     */
+    public void setWeekendNr(int weekendNr) {
+        this.weekendNr = weekendNr;
     }
             
     

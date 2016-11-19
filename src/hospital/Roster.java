@@ -67,7 +67,9 @@ public class Roster {
 	private int [] minConsecWork = new int[NURSES];                                                         //min number of consecutive workdays per nurse
 	private int [] maxConsecWork = new int[NURSES];                                                         //max number of consecutive workdays per nurse
 	private int [][] extremeMaxConsec = new int[NURSES][SHIFTS];			
-	private int [][] extremeMinConsec = new int[NURSES][SHIFTS];			
+	private int [][] extremeMinConsec = new int[NURSES][SHIFTS];
+        private int [] identicalWeekend = new int [NURSES];
+        
 
         
         // Concstructor maken, departement meegeven
@@ -289,9 +291,11 @@ public void readMonthlyRosterRules()
 			//Read the min/max number of consecutive work days
 			minConsecWork[n] = r.getMinConsAss();
 			maxConsecWork[n] = r.getMaxConsAss();
+                        identicalWeekend[n]=r.getWeekendNr();
 			System.out.println("MONTHlyRosterRules nurse: " + nurseID[n] 
 					+ " min and max ass: " + minAss[n] + "/" + maxAss[n] 
-					+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]);
+					+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]
+                                        + " identical weekend? "+identicalWeekend[n]);
 			
                         System.out.println("numberOfShifts: "+numberOfShifts);
 			// Read in first the constraints with respect to the working shifts
