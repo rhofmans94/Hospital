@@ -255,9 +255,9 @@ public class Roster {
             numberOfNurses = r.getNurses();
             numberOfNursesType1 = r.getNurses1();
             numberOfNursesType2 = r.getNurses2();
-		System.out.println("Number of Nurses: " + numberOfNurses);
-                System.out.println("Number of Nurses type 1: " + numberOfNursesType1);
-                System.out.println("Number of Nurses type 2: " + numberOfNursesType2);
+		//System.out.println("Number of Nurses: " + numberOfNurses);
+                //System.out.println("Number of Nurses type 1: " + numberOfNursesType1);
+                //System.out.println("Number of Nurses type 2: " + numberOfNursesType2);
 
 		for (int n=0;n<numberOfNurses;n++)
 		{			
@@ -268,7 +268,7 @@ public class Roster {
                    nurseType[n]=type[n];
                    nurseID[n]=ID[n];
                    
-		System.out.println("nurseID: " + nurseID[n] +" nurseEmploymentRate: " + (rate[n]) + "% APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + nurseType[n]  ); 
+		//System.out.println("nurseID: " + nurseID[n] +" nurseEmploymentRate: " + (rate[n]) + "% APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + nurseType[n]  ); 
 		}
 		
             System.out.println("_________________________end readPersonnelCharacteristics_____________________");
