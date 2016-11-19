@@ -127,30 +127,27 @@ public class reader {
             nurses = Integer.parseInt(lines[0][1]);
             nurses1 = Integer.parseInt(lines[1][1]);
             nurses2 = Integer.parseInt(lines[2][1]);
-            //System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
+            System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
             ID = new String [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 ID[i]=lines[(6+i)][0];
-                //System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
+                System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
             }
             employmentRate = new double [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 employmentRate[i]=Double.parseDouble(lines[(6+i)][15]);
-                //System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
+                System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
             }
-           //Employmentrate 1 komt eruit maar een ander kommagetal komt eruit als 0,0
-            
-            //Type werkt nog niet. Out of bound exception voor rij 17 
-            /*
+                       
             type = new int [(nurses)];
             for (int i=0; i<nurses; i++)
             {
-                type[i]=Integer.parseInt(lines[(6+i)][17]);
+                type[i]=Integer.parseInt(lines[(6+i)][16]);
                 System.out.println("nurse "+ (i+1) + " type: "+type[i]);
             }
-            */
+            
                          
      }
          catch (IOException e) {
