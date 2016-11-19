@@ -127,25 +127,25 @@ public class reader {
             nurses = Integer.parseInt(lines[0][1]);
             nurses1 = Integer.parseInt(lines[1][1]);
             nurses2 = Integer.parseInt(lines[2][1]);
-            System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
+            //System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
             ID = new String [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 ID[i]=lines[(6+i)][0];
-                System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
+                //System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
             }
             employmentRate = new double [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 employmentRate[i]=Double.parseDouble(lines[(6+i)][15]);
-                System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
+                //System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
             }
                        
             type = new int [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 type[i]=Integer.parseInt(lines[(6+i)][16]);
-                System.out.println("nurse "+ (i+1) + " type: "+type[i]);
+                //System.out.println("nurse "+ (i+1) + " type: "+type[i]);
             }
             
                          
@@ -179,34 +179,34 @@ public class reader {
             setMaxConsAss(Integer.parseInt(lines[7][1]));
             setWeekend(lines[26][0]);
             setWeekendNr(Integer.parseInt(lines[27][0]));
-            System.out.println(minAss +" "+ maxAss+" "+minConsAss+" "+maxConsAss+" "+weekend+" "+getWeekendNr());
+            //System.out.println(minAss +" "+ maxAss+" "+minConsAss+" "+maxConsAss+" "+weekend+" "+getWeekendNr());
             
             int s = getShifts();
-            System.out.println(s); //s=0 hoe haal je aantal shiften op??
+            //System.out.println(s); //s=0 hoe haal je aantal shiften op??
             s = 4;
             minConsecPerShiftType = new int [s];
             for (int i=1; i<s;i++)
             {
                minConsecPerShiftType[i]=Integer.parseInt(lines[10+i][0]);
-               System.out.println("shift= "+(i)+"minConsecPerShift: "+minConsecPerShiftType[i]);
+               //System.out.println("shift= "+(i)+"minConsecPerShift: "+minConsecPerShiftType[i]);
             }
             maxConsecPerShiftType = new int [s];
             for (int i=1; i<s;i++)
             {
                maxConsecPerShiftType[i]=Integer.parseInt(lines[10+i][1]);
-               System.out.println("shift= "+(i)+"maxConsecPerShift: "+maxConsecPerShiftType[i]);
+               //System.out.println("shift= "+(i)+"maxConsecPerShift: "+maxConsecPerShiftType[i]);
             }
             minNumberOfAssPerShiftMonth = new int [s];
             for (int i=1; i<s;i++)
             {
                minNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[18+i][0]);
-               System.out.println("shift= "+(i)+"minAssPerShift: "+minNumberOfAssPerShiftMonth[i]);
+               //System.out.println("shift= "+(i)+"minAssPerShift: "+minNumberOfAssPerShiftMonth[i]);
             }
             maxNumberOfAssPerShiftMonth = new int [s];
             for (int i=1; i<s;i++)
             {
                maxNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[18+i][1]);
-               System.out.println("shift= "+(i)+"minAssPerShift: "+maxNumberOfAssPerShiftMonth[i]);
+               //System.out.println("shift= "+(i)+"minAssPerShift: "+maxNumberOfAssPerShiftMonth[i]);
             }
                                     
         }
