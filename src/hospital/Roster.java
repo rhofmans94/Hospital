@@ -255,22 +255,22 @@ public class Roster {
             numberOfNurses = r.getNurses();
             numberOfNursesType1 = r.getNurses1();
             numberOfNursesType2 = r.getNurses2();
-		//System.out.println("Number of Nurses: " + numberOfNurses);
-                //System.out.println("Number of Nurses type 1: " + numberOfNursesType1);
-                //System.out.println("Number of Nurses type 2: " + numberOfNursesType2);
+		System.out.println("Number of Nurses: " + numberOfNurses);
+                System.out.println("Number of Nurses type 1: " + numberOfNursesType1);
+                System.out.println("Number of Nurses type 2: " + numberOfNursesType2);
 
 		for (int n=0;n<numberOfNurses;n++)
 		{			
                    double [] rate = r.getEmploymentRate();
-                   //int [] type = r.getType();
+                   int [] type = r.getType();
                    String [] ID = r.getID();
-                   nurseEmploymentRate[n] = (rate [n]);
-                   //nurseType[n]=type[n];
+                   nurseEmploymentRate[n] = (rate [n]/100);
+                   nurseType[n]=type[n];
                    nurseID[n]=ID[n];
                    
-		//System.out.println("nurseID: " + nurseID[n] +" nurseEmploymentRate: " + (rate[n]*100) + "% APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + "nurseType[n]"  ); 
+		System.out.println("nurseID: " + nurseID[n] +" nurseEmploymentRate: " + (rate[n]) + "% APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + nurseType[n]  ); 
 		}
-	//! nurseEmploymentrate geeft nog niet het juiste weer en type geeft nog niks weer --> reader	
+		
             System.out.println("_________________________end readPersonnelCharacteristics_____________________");
 	
         }
@@ -292,12 +292,12 @@ public void readMonthlyRosterRules()
 			minConsecWork[n] = r.getMinConsAss();
 			maxConsecWork[n] = r.getMaxConsAss();
                         identicalWeekend[n]=r.getWeekendNr();
-			System.out.println("MONTHlyRosterRules nurse: " + nurseID[n] 
-					+ " min and max ass: " + minAss[n] + "/" + maxAss[n] 
-					+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]
-                                        + " identical weekend? "+identicalWeekend[n]);
+                        //System.out.println("MONTHlyRosterRules nurse: " + nurseID[n] 
+			//		+ " min and max ass: " + minAss[n] + "/" + maxAss[n] 
+			//		+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]
+                        //                + " identical weekend? "+identicalWeekend[n]);
 			
-                        System.out.println("numberOfShifts: "+numberOfShifts);
+                        //System.out.println("numberOfShifts: "+numberOfShifts);
 			// Read in first the constraints with respect to the working shifts
 			for(int s=1;s<(numberOfShifts);s++) //om de free shift te includen, s van nul laten beginnen en de 0 als shiftID toevoegen in dB
 			{
@@ -311,15 +311,15 @@ public void readMonthlyRosterRules()
                             extremeMinConsec[n][shift[s]] = 10; // hoe bepalen we dat --> mario = 1
                             minNumberOfAssPerShiftMonth[n][shift[s]] = minAshift[s];
                             maxNumberOfAssPerShiftMonth[n][shift[s]] = maxAshift[s];
-                            System.out.println("MonthlyRosterRules shift: " + (s) + " min and max consec days per shift type: "
-						+ minConsecPerShiftType[n][shift[s]] + "/" +maxConsecPerShiftType[n][shift[s]] 
-						+" min and max number of ass per shift in a month: " + minNumberOfAssPerShiftMonth[n][shift[s]] 
-						+"/" +maxNumberOfAssPerShiftMonth[n][shift[s]] );
+                            //System.out.println("MonthlyRosterRules shift: " + (s) + " min and max consec days per shift type: "
+				//		+ minConsecPerShiftType[n][shift[s]] + "/" +maxConsecPerShiftType[n][shift[s]] 
+				//		+" min and max number of ass per shift in a month: " + minNumberOfAssPerShiftMonth[n][shift[s]] 
+				//		+"/" +maxNumberOfAssPerShiftMonth[n][shift[s]] );
 			}
 			
 		
 		}
-		////System.out.println("_________________________end readMonthlyRoster_____________________");
+		System.out.println("_________________________end readMonthlyRoster_____________________");
 		
         }
 
