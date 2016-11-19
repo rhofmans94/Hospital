@@ -184,30 +184,30 @@ public class reader {
             
             int s = getShifts();
             System.out.println(s); //s=0 hoe haal je aantal shiften op??
-            s = 3;
+            s = 4;
             minConsecPerShiftType = new int [s];
-            for (int i=0; i<s;i++)
+            for (int i=1; i<s;i++)
             {
-               minConsecPerShiftType[i]=Integer.parseInt(lines[11+i][0]);
-               System.out.println("shift= "+(i+1)+"minConsecPerShift: "+minConsecPerShiftType[i]);
+               minConsecPerShiftType[i]=Integer.parseInt(lines[10+i][0]);
+               System.out.println("shift= "+(i)+"minConsecPerShift: "+minConsecPerShiftType[i]);
             }
             maxConsecPerShiftType = new int [s];
-            for (int i=0; i<s;i++)
+            for (int i=1; i<s;i++)
             {
-               maxConsecPerShiftType[i]=Integer.parseInt(lines[11+i][1]);
-               System.out.println("shift= "+(i+1)+"maxConsecPerShift: "+maxConsecPerShiftType[i]);
+               maxConsecPerShiftType[i]=Integer.parseInt(lines[10+i][1]);
+               System.out.println("shift= "+(i)+"maxConsecPerShift: "+maxConsecPerShiftType[i]);
             }
             minNumberOfAssPerShiftMonth = new int [s];
-            for (int i=0; i<s;i++)
+            for (int i=1; i<s;i++)
             {
-               minNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[19+i][0]);
-               System.out.println("shift= "+(i+1)+"minAssPerShift: "+minNumberOfAssPerShiftMonth[i]);
+               minNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[18+i][0]);
+               System.out.println("shift= "+(i)+"minAssPerShift: "+minNumberOfAssPerShiftMonth[i]);
             }
             maxNumberOfAssPerShiftMonth = new int [s];
-            for (int i=0; i<s;i++)
+            for (int i=1; i<s;i++)
             {
-               maxNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[19+i][1]);
-               System.out.println("shift= "+(i+1)+"minAssPerShift: "+maxNumberOfAssPerShiftMonth[i]);
+               maxNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[18+i][1]);
+               System.out.println("shift= "+(i)+"minAssPerShift: "+maxNumberOfAssPerShiftMonth[i]);
             }
                                     
         }

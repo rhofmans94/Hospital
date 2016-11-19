@@ -293,8 +293,9 @@ public void readMonthlyRosterRules()
 					+ " min and max ass: " + minAss[n] + "/" + maxAss[n] 
 					+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]);
 			
+                        System.out.println("numberOfShifts: "+numberOfShifts);
 			// Read in first the constraints with respect to the working shifts
-			for(int s=0;s<numberOfShifts;s++) //om de free shift te includen, s van nul laten beginnen en de 0 als shiftID toevoegen in dB
+			for(int s=1;s<(numberOfShifts);s++) //om de free shift te includen, s van nul laten beginnen en de 0 als shiftID toevoegen in dB
 			{
                             int [] minCshift = r.getMinConsecPerShiftType();
                             int [] maxCshift = r.getMaxConsecPerShiftType();
@@ -306,7 +307,7 @@ public void readMonthlyRosterRules()
                             extremeMinConsec[n][shift[s]] = 10; // hoe bepalen we dat --> mario = 1
                             minNumberOfAssPerShiftMonth[n][shift[s]] = minAshift[s];
                             maxNumberOfAssPerShiftMonth[n][shift[s]] = maxAshift[s];
-                            System.out.println("MonthlyRosterRules shift: " + (s+1) + " min and max consec days per shift type: "
+                            System.out.println("MonthlyRosterRules shift: " + (s) + " min and max consec days per shift type: "
 						+ minConsecPerShiftType[n][shift[s]] + "/" +maxConsecPerShiftType[n][shift[s]] 
 						+" min and max number of ass per shift in a month: " + minNumberOfAssPerShiftMonth[n][shift[s]] 
 						+"/" +maxNumberOfAssPerShiftMonth[n][shift[s]] );
