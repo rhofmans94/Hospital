@@ -50,6 +50,7 @@ public class Roster {
 	//readPersonnelCharacteristics variables
 	private double[] nurseEmploymentRate = new double[NURSES]; 
 	private int [] nurseType = new int[NURSES];
+        private String [] nurseID = new String [NURSES];
 
 	//readCyclicRoster variables
 	private int[][] cyclicRostersType1;
@@ -168,49 +169,49 @@ public class Roster {
 		{	
 			shift[s] = 0;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}	
 		else if ((startShift[s] >= 3) && (startShift[s] < 9) && (req[d][0] != 0))
 		{	
 			shift[s] = 1;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}				
 		if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] == 0))			// If the shifts start at 9 am we define a day shift (and there is no other shift defined as a day shift)
 		{	
 			shift[s] = 1;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}			
 		else if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] != 0))
 		{	
 			shift[s] = 2;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}			
 		if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] == 0))		// If the shifts start at 12 am, 3 pm or 6 pm we define a late shift (and there is no other shift defined as a late shift)
 		{	
 			shift[s] = 2;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
 		else if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] != 0))
 		{			
 			shift[s] = 3;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
 		if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][3] == 0))			// If the shifts start at 9 pm or 12 pm we define a night shift (and there is no other shift defined as a night shift)
 		{	
 			shift[s] = 3;
                         readRequirements(department,s,shift[s]);
-			System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
+			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
 		else if ((startShift[s] >= 21) || (startShift[s] < 3) && (req[d][3] != 0))
 			System.out.println("Read problem shifts input");
 	}
 	shift[0] = 4;
-	System.out.println("free day: usershift: is now java shift: " + shift[0]);
+	//System.out.println("free day: usershift: is now java shift: " + shift[0]);
 	// According to the input data, the day off (code 0) is associated with shift (numberOfShifts-1) (the free shift). 
 
 	for (int s = 1; s <= numberOfShifts; s++)	// Determine the length of the shifts
@@ -218,13 +219,13 @@ public class Roster {
 			{
 			hrs[shift[s]] = lengthOfShift;
                         endShift[s] = startShift[s] + lengthOfShift;
-			System.out.println("length shift " + s + " : "+ hrs[shift[s]]);
+			//System.out.println("length shift " + s + " : "+ hrs[shift[s]]);
 			}
 		else
 			{
 			hrs[shift[s]] = lengthOfShift;
                         endShift[s] = hrs[shift[s]] + startShift[s]-24;
-			System.out.println("length shift " + s + ": " + hrs[shift[s]]);
+			//System.out.println("length shift " + s + ": " + hrs[shift[s]]);
 			}
 	}
 
@@ -234,8 +235,8 @@ public class Roster {
 	{	for (int s = 1; s <= numberOfShifts; s++)							
 		{
 			req[d][shift[s]] = req[0][shift[s]];
-			System.out.println("s = "+s+"shift[s]= "+ shift[s]);
-			System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]] + " number of nurses");
+			//System.out.println("s = "+s+"shift[s]= "+ shift[s]);
+			//System.out.println("staffing req for day " + (d+1) + " and usershift " + s + ": " + req[d][shift[s]] + " number of nurses");
 		}
 	}
 	
@@ -244,4 +245,80 @@ public class Roster {
 	
 	}
         
+        public void readPersonnelCharacteristics()
+	{
+            reader r = new reader();
+            r.readNurses(department);
+            
+            numberOfNurses = r.getNurses();
+            numberOfNursesType1 = r.getNurses1();
+            numberOfNursesType2 = r.getNurses2();
+		//System.out.println("Number of Nurses: " + numberOfNurses);
+                //System.out.println("Number of Nurses type 1: " + numberOfNursesType1);
+                //System.out.println("Number of Nurses type 2: " + numberOfNursesType2);
+
+		for (int n=0;n<numberOfNurses;n++)
+		{			
+                   double [] rate = r.getEmploymentRate();
+                   //int [] type = r.getType();
+                   String [] ID = r.getID();
+                   nurseEmploymentRate[n] = (rate [n]);
+                   //nurseType[n]=type[n];
+                   nurseID[n]=ID[n];
+                   
+		//System.out.println("nurseID: " + nurseID[n] +" nurseEmploymentRate: " + (rate[n]*100) + "% APPLIED that becomes: " + nurseEmploymentRate[n] + " and of type " + "nurseType[n]"  ); 
+		}
+	//! nurseEmploymentrate geeft nog niet het juiste weer en type geeft nog niks weer --> reader	
+            System.out.println("_________________________end readPersonnelCharacteristics_____________________");
+	
+        }
+public void readMonthlyRosterRules()
+	{
+            reader r = new reader();
+            r.readRosterRules(department);
+            
+		for (int n=0; n < numberOfNurses; n++)
+		{
+			// Read the min/max number of 
+			//assignments over the complete scheduling period
+			minAss[n] = r.getMinAss();
+			maxAss[n] = r.getMaxAss();
+			//individual Employment rates depending of FT or PT nurse
+			minAss[n]=(int)Math.round(nurseEmploymentRate[n]*minAss[n]);
+			maxAss[n]=(int)Math.round(nurseEmploymentRate[n]*maxAss[n]);
+			//Read the min/max number of consecutive work days
+			minConsecWork[n] = r.getMinConsAss();
+			maxConsecWork[n] = r.getMaxConsAss();
+			System.out.println("MONTHlyRosterRules nurse: " + nurseID[n] 
+					+ " min and max ass: " + minAss[n] + "/" + maxAss[n] 
+					+ " min and max consecWork: "  + minConsecWork[n] + "/" + maxConsecWork[n]);
+			
+			// Read in first the constraints with respect to the working shifts
+			for(int s=0;s<numberOfShifts;s++) //om de free shift te includen, s van nul laten beginnen en de 0 als shiftID toevoegen in dB
+			{
+                            int [] minCshift = r.getMinConsecPerShiftType();
+                            int [] maxCshift = r.getMaxConsecPerShiftType();
+                            int [] minAshift = r.getMinNumberOfAssPerShiftMonth();
+                            int [] maxAshift = r.getMaxNumberOfAssPerShiftMonth();
+                            minConsecPerShiftType[n][shift[s]]=minCshift[s];
+                            maxConsecPerShiftType[n][shift[s]]=maxCshift[s];
+                            extremeMaxConsec[n][shift[s]] = 10;// hoe bepalen we dat 
+                            extremeMinConsec[n][shift[s]] = 10; // hoe bepalen we dat --> mario = 1
+                            minNumberOfAssPerShiftMonth[n][shift[s]] = minAshift[s];
+                            maxNumberOfAssPerShiftMonth[n][shift[s]] = maxAshift[s];
+                            System.out.println("MonthlyRosterRules shift: " + (s+1) + " min and max consec days per shift type: "
+						+ minConsecPerShiftType[n][shift[s]] + "/" +maxConsecPerShiftType[n][shift[s]] 
+						+" min and max number of ass per shift in a month: " + minNumberOfAssPerShiftMonth[n][shift[s]] 
+						+"/" +maxNumberOfAssPerShiftMonth[n][shift[s]] );
+			}
+			
+		
+		}
+		////System.out.println("_________________________end readMonthlyRoster_____________________");
+		
+        }
+
+
+
+    
 }

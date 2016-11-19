@@ -9,6 +9,8 @@ public class Hospital {
 
         Roster r = new Roster('A');
         r.readShiftSystem();
+        r.readPersonnelCharacteristics();
+        r.readMonthlyRosterRules();
     }
     
 }

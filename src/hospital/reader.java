@@ -1,13 +1,9 @@
 
 package hospital;
 
-import java.io.FileNotFoundException;
+import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import com.opencsv.CSVReader;
-import java.util.ArrayList;
 
 
 /**
@@ -15,6 +11,7 @@ import java.util.ArrayList;
  * @author Ruth Hofmans
  */
 public class reader {
+    private char department;
     
     private int length;
     private int shifts;
@@ -31,8 +28,23 @@ public class reader {
     private int budgetC;
     private int budgetD;
     
-    //private int [] start;
+    private int nurses;
+    private int nurses1;
+    private int nurses2;
+    private double [] employmentRate;
+    private int [] type;
+    private String [] ID;
     
+    private int minAss;
+    private int maxAss;
+    private int minConsAss;
+    private int maxConsAss;
+    private String weekend;
+    private int [] minConsecPerShiftType;
+    private int [] maxConsecPerShiftType;
+    private int [] minNumberOfAssPerShiftMonth;
+    private int [] maxNumberOfAssPerShiftMonth;
+       
     public reader(){
         
     }
@@ -61,13 +73,7 @@ public class reader {
             shifts = Integer.parseInt(lines[1][0]);
             //System.out.print("shifts: "+shifts + "\n");
             
-            /* De array zo invullen dan start het op 1
-            for (int i=1; i<=shifts; i++)
-            {
-              start[i]=Integer.parseInt(lines[(3+i)][0]);   
-            }
-            */
-                    
+                
             setStartShiftA(new int [] {0,Integer.parseInt(lines[4][0]), Integer.parseInt(lines[5][0]),Integer.parseInt(lines[6][0])});
             setStartShiftB(new int [] {0,Integer.parseInt(lines[4][1]), Integer.parseInt(lines[5][1]),Integer.parseInt(lines[6][1])});
             setStartShiftC(new int [] {0,Integer.parseInt(lines[4][2]), Integer.parseInt(lines[5][2]),Integer.parseInt(lines[6][2])});
@@ -97,6 +103,119 @@ public class reader {
      
 }  
 
+    public void readNurses(char department) {
+        this.department = department;
+                
+        CSVReader reader;
+        try{
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
+            String[][] lines= new String[50][50];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+        
+            nurses = Integer.parseInt(lines[0][1]);
+            nurses1 = Integer.parseInt(lines[1][1]);
+            nurses2 = Integer.parseInt(lines[2][1]);
+            //System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
+            ID = new String [(nurses)];
+            for (int i=0; i<nurses; i++)
+            {
+                ID[i]=lines[(6+i)][0];
+                //System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
+            }
+            employmentRate = new double [(nurses)];
+            for (int i=0; i<nurses; i++)
+            {
+                employmentRate[i]=Double.parseDouble(lines[(6+i)][15]);
+                //System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
+            }
+           //Employmentrate 1 komt eruit maar een ander kommagetal komt eruit als 0,0
+            
+            //Type werkt nog niet. Out of bound exception voor rij 17 
+            /*
+            type = new int [(nurses)];
+            for (int i=0; i<nurses; i++)
+            {
+                type[i]=Integer.parseInt(lines[(6+i)][17]);
+                System.out.println("nurse "+ (i+1) + " type: "+type[i]);
+            }
+            */
+                         
+     }
+         catch (IOException e) {
+			e.printStackTrace();
+        }
+     
+} 
+    public void readRosterRules(char department) {
+        this.department = department;
+        CSVReader reader;
+        try{
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EconstrInput"+department+".csv"));
+            String[][] lines= new String[50][50];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+            setMinAss(Integer.parseInt(lines[3][0]));
+            setMaxAss(Integer.parseInt(lines[3][1]));
+            setMinConsAss(Integer.parseInt(lines[7][0]));
+            setMaxConsAss(Integer.parseInt(lines[7][1]));
+            setWeekend(lines[26][0]);
+            System.out.println(minAss +" "+ maxAss+" "+minConsAss+" "+maxConsAss+" "+weekend);
+            
+            int s = getShifts();
+            System.out.println(s); //s=0 hoe haal je aantal shiften op??
+            s = 3;
+            minConsecPerShiftType = new int [s];
+            for (int i=0; i<s;i++)
+            {
+               minConsecPerShiftType[i]=Integer.parseInt(lines[11+i][0]);
+               System.out.println("shift= "+(i+1)+"minConsecPerShift: "+minConsecPerShiftType[i]);
+            }
+            maxConsecPerShiftType = new int [s];
+            for (int i=0; i<s;i++)
+            {
+               maxConsecPerShiftType[i]=Integer.parseInt(lines[11+i][1]);
+               System.out.println("shift= "+(i+1)+"maxConsecPerShift: "+maxConsecPerShiftType[i]);
+            }
+            minNumberOfAssPerShiftMonth = new int [s];
+            for (int i=0; i<s;i++)
+            {
+               minNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[19+i][0]);
+               System.out.println("shift= "+(i+1)+"minAssPerShift: "+minNumberOfAssPerShiftMonth[i]);
+            }
+            maxNumberOfAssPerShiftMonth = new int [s];
+            for (int i=0; i<s;i++)
+            {
+               maxNumberOfAssPerShiftMonth[i]=Integer.parseInt(lines[19+i][1]);
+               System.out.println("shift= "+(i+1)+"minAssPerShift: "+maxNumberOfAssPerShiftMonth[i]);
+            }
+                                    
+        }
+         catch (IOException e) {
+			e.printStackTrace();
+        }
+     
+}  
     /**
      * @return the length
      */
@@ -292,7 +411,180 @@ public class reader {
     public void setBudgetD(int budgetD) {
         this.budgetD = budgetD;
     }
-    
+              
+    public int getNurses()
+    {
+        return nurses;
+    }
+    public void setNurses(int nurses)
+    {
+        this.nurses = nurses;
+    }
+    public int getNurses1()
+    {
+        return nurses1;
+    }
+    public void setNurses1(int nurses1)
+    {
+        this.nurses1 = nurses1;
+    }
+    public int getNurses2()
+    {
+        return nurses2;
+    }
+    public void setNurses2(int nurses2)
+    {
+        this.nurses2 = nurses2;
+    }
+        
+    public double[]getEmploymentRate()
+    {
+        return employmentRate;
+    }
+    public void setEmploymentRate(double []employmentRate)
+    {
+        this.employmentRate = employmentRate;
+    }
+    public int [] getType()
+    {
+        return type;
+    }
+    public void setType(int[]type)
+    {
+        this.type = type;
+    }
+    public String [] getID()
+    {
+        return ID;
+    }
+    public void setID(String []ID)
+    {
+        this.ID = ID;
+    }
+
+    /**
+     * @param minAss the minAss to set
+     */
+    public int getMinAss()
+    {
+        return minAss;
+    }
+    public void setMinAss(int minAss) {
+        this.minAss = minAss;
+    }
+
+    /**
+     * @return the maxAss
+     */
+    public int getMaxAss() {
+        return maxAss;
+    }
+
+    /**
+     * @param maxAss the maxAss to set
+     */
+    public void setMaxAss(int maxAss) {
+        this.maxAss = maxAss;
+    }
+
+    /**
+     * @return the minConsAss
+     */
+    public int getMinConsAss() {
+        return minConsAss;
+    }
+
+    /**
+     * @param minConsAss the minConsAss to set
+     */
+    public void setMinConsAss(int minConsAss) {
+        this.minConsAss = minConsAss;
+    }
+
+    /**
+     * @return the maxConsAss
+     */
+    public int getMaxConsAss() {
+        return maxConsAss;
+    }
+
+    /**
+     * @param maxConsAss the maxConsAss to set
+     */
+    public void setMaxConsAss(int maxConsAss) {
+        this.maxConsAss = maxConsAss;
+    }
+
+    /**
+     * @return the weekend
+     */
+    public String getWeekend() {
+        return weekend;
+    }
+
+    /**
+     * @param weekend the weekend to set
+     */
+    public void setWeekend(String weekend) {
+        this.weekend = weekend;
+    }
+
+    /**
+     * @return the minConsecPerShiftType
+     */
+    public int[] getMinConsecPerShiftType() {
+        return minConsecPerShiftType;
+    }
+
+    /**
+     * @param minConsecPerShiftType the minConsecPerShiftType to set
+     */
+    public void setMinConsecPerShiftType(int[] minConsecPerShiftType) {
+        this.minConsecPerShiftType = minConsecPerShiftType;
+    }
+
+    /**
+     * @return the maxConsecPerShiftType
+     */
+    public int[] getMaxConsecPerShiftType() {
+        return maxConsecPerShiftType;
+    }
+
+    /**
+     * @param maxConsecPerShiftType the maxConsecPerShiftType to set
+     */
+    public void setMaxConsecPerShiftType(int[] maxConsecPerShiftType) {
+        this.maxConsecPerShiftType = maxConsecPerShiftType;
+    }
+
+    /**
+     * @return the minNumberOfAssPerShiftType
+     */
+    public int[] getMinNumberOfAssPerShiftMonth() {
+        return minNumberOfAssPerShiftMonth;
+    }
+
+    /**
+     * @param minNumberOfAssPerShiftType the minNumberOfAssPerShiftType to set
+     */
+    public void setMinNumberOfAssPerShiftMonth(int[] minNumberOfAssPerShiftMonth) {
+        this.minNumberOfAssPerShiftMonth = minNumberOfAssPerShiftMonth;
+    }
+
+    /**
+     * @return the maxNumberOfAssPerShiftType
+     */
+    public int[] getMaxNumberOfAssPerShiftMonth() {
+        return maxNumberOfAssPerShiftMonth;
+    }
+
+    /**
+     * @param maxNumberOfAssPerShiftType the maxNumberOfAssPerShiftType to set
+     */
+    public void setMaxNumberOfAssPerShiftMonth(int[] maxNumberOfAssPerShiftMonth) {
+        this.maxNumberOfAssPerShiftMonth = maxNumberOfAssPerShiftMonth;
+    }
+            
     
     
 }
