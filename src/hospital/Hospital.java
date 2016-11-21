@@ -11,6 +11,7 @@ public class Hospital {
         r.readShiftSystem();
         r.readPersonnelCharacteristics();
         r.readMonthlyRosterRules();
+        r.readCyclicRoster();
     }
     
 }

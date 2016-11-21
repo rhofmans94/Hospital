@@ -13,6 +13,10 @@ import java.io.IOException;
 public class reader {
     private char department;
     
+    private final int DAYS = 28; 
+    private final int SHIFTS = 4;           // aan te passen
+    private int[] shift = new int[SHIFTS];
+    
     private int length;
     private int shifts;
     private int [] startShiftA;
@@ -45,6 +49,13 @@ public class reader {
     private int [] maxConsecPerShiftType;
     private int [] minNumberOfAssPerShiftMonth;
     private int [] maxNumberOfAssPerShiftMonth;
+    
+    private int numberOfRostersType1;
+    private int numberOfRostersType2;
+    private int [][] cyclicRostersType1 = new int [50][50];
+    private int [][] cyclicRostersType2 = new int [50][50];
+    private int [] reqFTERosterType1;
+    private int [] reqFTERosterType2;
        
     public reader(){
         
@@ -54,8 +65,8 @@ public class reader {
 
         CSVReader reader;
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\C input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\C input.csv"));
             String[][] lines= new String[20][20];
             String [] nextLine;
         int lineNumber = 0;
@@ -109,8 +120,8 @@ public class reader {
                 
         CSVReader reader;
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Anurse.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
             String[][] lines= new String[50][50];
             String [] nextLine;
         int lineNumber = 0;
@@ -159,8 +170,8 @@ public class reader {
         this.department = department;
         CSVReader reader;
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EconstrInput"+department+".csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\EconstrInputA.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EconstrInput"+department+".csv"));
             String[][] lines= new String[50][50];
             String [] nextLine;
         int lineNumber = 0;
@@ -214,7 +225,60 @@ public class reader {
 			e.printStackTrace();
         }
      
-}  
+}
+    
+    public void readRosters(char department){
+        
+        this.department = department;
+        CSVReader reader;
+        
+        try{
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\D-input.csv"));
+            String[][] lines= new String[50][50];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+        
+        readNurses(department);
+        numberOfRostersType1 = nurses1;
+        numberOfRostersType2 = nurses2;
+        
+        for (int s=0;s<numberOfRostersType1;s++)
+		{
+			//reqFTERosterType1[s]= Integer.parseInt(lines[s+4]);
+			for (int d=0;d<DAYS;d++){
+			
+                                System.out.println(Integer.parseInt(lines[s+3][d]));
+				cyclicRostersType1[s][d]=Integer.parseInt(lines[s+3][d]); 
+				System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+						+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+			}
+		}
+        for (int s=numberOfRostersType1;s<numberOfRostersType1+numberOfRostersType2;s++)
+		{
+			//reqFTERosterType1[s]= Integer.parseInt(lines[s+4]);
+			for (int d=0;d<DAYS;d++)
+			{
+				cyclicRostersType1[s][d]=Integer.parseInt(lines[s+3][d]); 
+				System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+						+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+			}
+		}
+    }
+        catch (IOException e) {
+			e.printStackTrace();
+        }
+        
+    }
     /**
      * @return the length
      */
@@ -597,7 +661,92 @@ public class reader {
     public void setWeekendNr(int weekendNr) {
         this.weekendNr = weekendNr;
     }
-            
+
+    /**
+     * @return the numberOfRostersType1
+     */
+    public int getNumberOfRostersType1() {
+        return numberOfRostersType1;
+    }
+
+    /**
+     * @param numberOfRostersType1 the numberOfRostersType1 to set
+     */
+    public void setNumberOfRostersType1(int numberOfRostersType1) {
+        this.numberOfRostersType1 = numberOfRostersType1;
+    }
+
+    /**
+     * @return the numberOfRostersType2
+     */
+    public int getNumberOfRostersType2() {
+        return numberOfRostersType2;
+    }
+
+    /**
+     * @param numberOfRostersType2 the numberOfRostersType2 to set
+     */
+    public void setNumberOfRostersType2(int numberOfRostersType2) {
+        this.numberOfRostersType2 = numberOfRostersType2;
+    }
+
+    /**
+     * @return the cyclicRostersType1
+     */
+    public int[][] getCyclicRostersType1() {
+        return cyclicRostersType1;
+    }
+
+    /**
+     * @param cyclicRostersType1 the cyclicRostersType1 to set
+     */
+    public void setCyclicRostersType1(int[][] cyclicRostersType1) {
+        this.cyclicRostersType1 = cyclicRostersType1;
+    }
+
+    /**
+     * @return the cyclicRostersType2
+     */
+    public int[][] getCyclicRostersType2() {
+        return cyclicRostersType2;
+    }
+
+    /**
+     * @param cyclicRostersType2 the cyclicRostersType2 to set
+     */
+    public void setCyclicRostersType2(int[][] cyclicRostersType2) {
+        this.cyclicRostersType2 = cyclicRostersType2;
+    }
+
+    /**
+     * @return the reqFTERosterType1
+     */
+    public int[] getReqFTERosterType1() {
+        return reqFTERosterType1;
+    }
+
+    /**
+     * @param reqFTERosterType1 the reqFTERosterType1 to set
+     */
+    public void setReqFTERosterType1(int[] reqFTERosterType1) {
+        this.reqFTERosterType1 = reqFTERosterType1;
+    }
+
+    /**
+     * @return the reqFTERosterType2
+     */
+    public int[] getReqFTERosterType2() {
+        return reqFTERosterType2;
+    }
+
+    /**
+     * @param reqFTERosterType2 the reqFTERosterType2 to set
+     */
+    public void setReqFTERosterType2(int[] reqFTERosterType2) {
+        this.reqFTERosterType2 = reqFTERosterType2;
+    }
+     
+    
     
     
 }

@@ -324,6 +324,57 @@ public void readMonthlyRosterRules()
         }
 
 
+public void readCyclicRoster()
+	{
+            reader r = new reader();
+            r.readRosters(department);
+            
+            numberOfRostersType1 = r.getNumberOfRostersType1();
+            numberOfRostersType2 = r.getNumberOfRostersType2();
+            
+            cyclicRostersType1 = new int [numberOfRostersType1][DAYS];
+            cyclicRostersType2 = new int [numberOfRostersType1+numberOfRostersType2][DAYS];
+            reqFTERosterType1 = new int[numberOfRostersType1];
+            reqFTERosterType2 = new int [numberOfRostersType1+numberOfRostersType2];
+
+                    
+		for (int s=0;s<numberOfRostersType1;s++)
+		{
+			//reqFTERosterType1[s]= db.getReqFTERosterType(s, 1);
+			for (int d=0;d<DAYS;d++)
+			{
+                                int [][] cyclR1 = r.getCyclicRostersType1();
+				cyclicRostersType1[s][d]=shift[cyclR1[s][d]]; 
+				System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (s+1) 
+						+ " is " + cyclicRostersType1[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+			}
+		}
+		
+		for (int s=(numberOfRostersType1);s<(numberOfRostersType1+numberOfRostersType2);s++) 
+		{
+			//reqFTERosterType2[s]= db.getReqFTERosterType(s, 2);
+			for (int d=0;d<DAYS;d++)
+			{
+                                int [][] cyclR2 = r.getCyclicRostersType2();
+				cyclicRostersType2[s][d]=shift[cyclR2[s][d]]; 
+				System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+						+ " is " + cyclicRostersType2[s][d]+ " and there are " + "reqFTERosterType2[r]" + " FTE required.") ;
+			}
+		}
+		System.out.println("_________________________end readCyclicRoster_____________________");
+	
+	}
+
+
+
+public void readInput(){
+    readShiftSystem();
+    readPersonnelCharacteristics();
+    readMonthlyRosterRules();
+    readCyclicRoster();
+}
+
+
 
     
 }
