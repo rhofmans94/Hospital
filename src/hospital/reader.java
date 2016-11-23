@@ -65,8 +65,8 @@ public class reader {
 
         CSVReader reader;
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\C input.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\C input.csv"));
             String[][] lines= new String[20][20];
             String [] nextLine;
         int lineNumber = 0;
@@ -120,8 +120,8 @@ public class reader {
                 
         CSVReader reader;
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Anurse.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Anurse.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
             String[][] lines= new String[50][50];
             String [] nextLine;
         int lineNumber = 0;
@@ -170,8 +170,8 @@ public class reader {
         this.department = department;
         CSVReader reader;
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\EconstrInputA.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EconstrInput"+department+".csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\EconstrInputA.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EconstrInput"+department+".csv"));
             String[][] lines= new String[50][50];
             String [] nextLine;
         int lineNumber = 0;
@@ -233,9 +233,9 @@ public class reader {
         CSVReader reader;
         
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\C-input.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\D-input.csv"));
-            String[][] lines= new String[50][50];
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\D-input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;
                
