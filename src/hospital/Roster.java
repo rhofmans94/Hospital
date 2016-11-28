@@ -13,6 +13,10 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import hospital.reader;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 
 public class Roster {
@@ -22,7 +26,7 @@ public class Roster {
         private final int TYPES = 2;
 	private final int DAYS = 28; 
 	private final int ROSTERS = 100;        // Individueel rooster voor elke nurse
-	private final int MAXCONSECUTIVEDAYS = 5; 
+	private final int MAXCONSDAYSOFWORK=5; 
         
         private char department; // a,b,c,d
         
@@ -157,13 +161,19 @@ public class Roster {
             this.department = department;
         }
         
-        public void shiftDecoding (int shiftCode)
+        public int shiftDecoding (int shiftCode)
 	{
+		int userShiftID=10;
 		for (int s =0; s<numberOfShifts; s++)
 		{
-			if (shift[s]==shiftCode);
-                        break;
+			if (shift[s]==shiftCode)
+			userShiftID=s;
 		}
+		if (userShiftID ==10)
+    		JOptionPane.showMessageDialog(null,"You didn't pass a JAVA shiftID ","MISTAKE IN DECODING",JOptionPane.WARNING_MESSAGE);
+
+		////System.out.println("userShiftID: " + userShiftID + " and passed through JAVAs: " + shiftCode);
+		return userShiftID;
 	}
 	
         public void readRequirements (char department,int i ,int shift) //om de requirements in te lezen
@@ -451,6 +461,9 @@ public void readInput(){
 }
 
 public void iterate(){
+    
+    reader r = new reader();
+    
 		int count1=0;
 		int count2=0;
 		int violationss=0; //Ruth heeft hier een int van gemaatk want bestond niet??
@@ -481,13 +494,13 @@ public void iterate(){
 			violationss=0;
 			for (int n=0; n<numberOfNurses;n++){
  				for (int d=0;d<DAYS;d++){
- 					violationss+= db.getNursePreferencesTotal(n, d, shiftDecoding(nurseSchedule[n][d]));
+ 					violations+= r.readPreference(n, d, shiftDecoding(nurseSchedule[n][d]));
  				}
  			}
  			System.out.println("Total Violations: " + violationss);
  			
  			evaluateSolution();
-	 		if (violationss<minimum && violations[1]==0 && kappa!=0){
+	 		if (violations<minimum && violations[1]==0 && kappa!=0){
 	 			minimum=violationss;
 	 			sharedRosterFinal=new HashSet<Integer>(sharedRoster);
 				assignedNursesFinal=new ArrayList<Integer>(assignedNurses);
@@ -696,6 +709,8 @@ public void procedureBA()
 	}
 	public int procedurePT()
 	{
+            reader re = new reader();
+            
 		int r;
 		int totaalAantal=0;
 		int aantalPT=0;
@@ -759,10 +774,1111 @@ public void procedureBA()
 		for (int n=0; n<numberOfNurses;n++){////System.out.println("nurse " + db.getArrayNurse(n).getNurseID() + ", Roster " + (nurseDoesBin[n]+1)) ;
 			for (int d=0;d<DAYS;d++){
 				////System.out.println("Day " +(d+1)+ " Usershift " + shiftDecoding(nurseScheduleBin[n][d]) +  " penalty: " + db.getNursePreferencesTotal(n, d, shiftDecoding(nurseScheduleBin[n][d])) );
-				violations+= db.getNursePreferencesTotal(n, d, shiftDecoding(nurseScheduleBin[n][d]));
+				violations+= re.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d]));
 			}
 		}
 		return violations;
+	}
+        
+        public int procedurePTMH(int totaalAantal, int aantalPT, int aantalHT)//hier enkel nog de voorwaarde van opeenvolgende dagen nog bij
+	{
+            reader r = new reader();
+            
+	int[] sumDay= new int [DAYS];//row total over day for all nurses
+	randBin=new int[numberOfNurses][DAYS];//random number per nurse per day
+	int totPenalty=999999;
+	prefArrayRandom=new int [totaalAantal];
+	int[] cancelled=new int [numberOfNurses];
+	int[] worked=new int [numberOfNurses];
+	String text="";
+	
+	voldoendeDagenAf.clear();
+	voldoendeDagenGewerkt.clear();
+	
+	int high=0;;
+    int low=0;
+	int reqMinAss=(int) Math.round((double)totaalAantal/2); //YYYYYYYY
+	int totalAss=(int) Math.round((double)(aantalPT*15 + aantalHT*10)); //XXXXXX
+	int surplus=totalAss-reqMinAss*20;//ZZZZZZ = X-Y*20
+	int maxLoad=0;//number of times the maximum logically possible number of nurses is assigned
+	int reqMaxLoad= (reqMinAss*20-aantalPT*(20-15)) + (reqMinAss*20-aantalHT*(20-10));
+	int totalSumDay=0;
+	int reqTotalSumDay=aantalPT * 15 + aantalHT*10;//required total over all days for all nurses
+	
+	if(surplus<0) {
+		high=reqMinAss;
+		low=reqMinAss-1;
+		reqMaxLoad=20+surplus;
+		}
+	else if(surplus==0) {
+		high=reqMinAss;
+		low=reqMinAss;
+		reqMaxLoad=20;
+		}
+	else if (surplus>0 && surplus<=20){
+		high=reqMinAss+1;
+		low=reqMinAss;
+		reqMaxLoad=surplus;
+		}
+	else if (surplus>20 && surplus <=40){
+		high=reqMinAss+2;
+		low=reqMinAss+1;
+		reqMaxLoad=surplus-20;
+		}
+	else if (surplus>40 && surplus<=60){
+		high=reqMinAss+3;
+		low=reqMinAss+2;
+		reqMaxLoad=surplus-40;
+		}
+	else if (surplus>60 && surplus<=80){
+		high=reqMinAss+4;
+		low=reqMinAss+3;
+		reqMaxLoad=surplus-60;
+		}
+	
+	for (int i=0; i<1;i++){
+		for (int d=0;d<DAYS;d++){
+			if(nurseScheduleBin[PTHTnurses[0]][d]<numberOfShifts-1){//nurses on this roster work
+				sumDay[d]=(new Random().nextInt(high-low+1)+low);
+		        if(sumDay[d]==high) maxLoad++;
+		   		totalSumDay+=sumDay[d];
+			    }
+			}
+		
+		
+	if (totalSumDay!= reqTotalSumDay) {/*////System.out.println("BREAK cause total sum is " +  totalSumDay + " and not " + reqTotalSumDay);*/break;}
+	if (maxLoad!=reqMaxLoad){/*////System.out.println("BREAK cause total number of days with nurses at max load is " +  maxLoad + " and not " + reqMaxLoad);*/break;}		
+	text=("\nRoster: " + (nurseDoesBin[PTHTnurses[0]]+1)  + " First nurse: " + (PTHTnurses[0]+1) 
+			+"\nSurplus: " + surplus + "=> " + reqMaxLoad  + " dagen met " + high + " nurses en " + (20-reqMaxLoad) + " van " + low);
+	text+=("\n===>> ECHT " + (aantalPT * 15 + aantalHT*10) + " = " + (reqMaxLoad*high + (20-reqMaxLoad)*low)  + " DOEL");
+		if (totaalAantal==1){totPenalty=0;
+			for (int d=0;d<DAYS;d++){
+				text+=("\t\tday " + (d+1) + "\t" + sumDay[d]);
+				randBin[0][d]=sumDay[d];
+				if (randBin[0][d]==0){
+					nurseScheduleBin[PTHTnurses[0]][d]=numberOfShifts-1;
+					}
+				totPenalty+=r.readPreference(PTHTnurses[0], d, shiftDecoding(nurseScheduleBin[PTHTnurses[0]][d]));
+				}
+			
+		}//end if == 1
+		if (totaalAantal>1){totPenalty=0;
+			////System.out.println("totaalAantal " + totaalAantal + ", aantalPT " +  aantalPT + ",en aantalHT " + aantalHT);
+			for (int d=0;d<DAYS;d++){
+					if(nurseScheduleBin[PTHTnurses[0]][d]<numberOfShifts-1){
+						text+=("\n\t\tday " + (d+1) + "\t" + sumDay[d]);
+						int teller=0;
+						for (int n=0; n<numberOfNurses;n++){
+							for (int t=0;t<totaalAantal;t++){
+								if (n==PTHTnurses[t]){
+									prefArrayRandom[t]=r.readPreference(PTHTnurses[t], d, shiftDecoding(nurseScheduleBin[PTHTnurses[t]][d]));
+									if (voldoendeDagenAf.contains(n)){
+										prefArrayRandom[t]*=100;
+										randBin[n][d]=1;
+										teller++;
+										text+=(" \nnurse: " + db.getArrayNurse(PTHTnurses[t]).getNurseID() +" has to work, pref:" + prefArrayRandom[t]);
+									}
+									else if (voldoendeDagenGewerkt.contains(n)){
+										prefArrayRandom[t]*=100;
+										randBin[n][d]=0;
+										nurseScheduleBin[n][d]=numberOfShifts-1;
+										text+=(" \nnurse: " + db.getArrayNurse(PTHTnurses[t]).getNurseID() +" may not longer work, pref:" + prefArrayRandom[t]);
+										
+									}
+								}
+							}
+						}
+					bubbleSortPref();
+					for (int j=0; j<sumDay[d]-teller; j++){
+						for (int n=0; n<numberOfNurses;n++){
+							if (n==PTHTnurses[j]){
+								randBin[n][d]=1;
+								worked[n]++;
+								text+=(" \nnurse: " + db.getArrayNurse(PTHTnurses[j]).getNurseID() +" will work, pref: "+ + prefArrayRandom[j]);
+							}
+						}
+					}
+					for (int n=0; n<numberOfNurses;n++){
+						for (int t=0;t<totaalAantal;t++){
+							if (n==PTHTnurses[t]){
+								if (randBin[n][d]==0){
+									cancelled[n]++;
+									text+=("\nCancel n "+ cancelled[n] +" of "+ (20-maxAss[PTHTnurses[t]]) + " for nurse: " + db.getArrayNurse(PTHTnurses[t]).getNurseID() + ", pref:  "+ prefArrayRandom[t]);
+									}
+								if (!voldoendeDagenAf.contains(n)){	
+									if(cancelled[n]==(20-maxAss[PTHTnurses[t]])){
+										voldoendeDagenAf.add(n);
+										cancelled[n]=0;
+										text+=(" \nnurse: " + db.getArrayNurse(PTHTnurses[t]).getNurseID() +" has been added to VoldoendeDagenAf");
+										}
+									if (worked[n]==maxAss[PTHTnurses[t]]){
+										voldoendeDagenGewerkt.add(n);
+										worked[n]=0;
+										text+=(" \nnurse: " + db.getArrayNurse(PTHTnurses[t]).getNurseID() +" has been added to VoldoendeDagenGewerkt");
+										}
+									}
+								}
+							}
+						}
+						
+					}
+				}
+			for (int d=0;d<DAYS;d++){
+				for (int n=0; n<numberOfNurses;n++){
+					for (int t=0;t<totaalAantal;t++){
+						if (n==PTHTnurses[t]){
+							if(randBin[n][d]==0){
+								nurseScheduleBin[PTHTnurses[t]][d]=numberOfShifts-1;
+							}
+							totPenalty+=r.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d]));
+
+						}
+					}
+					
+				}
+			}
+		}
+	}if (totPenalty!=999999)
+		////System.out.println("\n\tprocedurePTMH == PT Penalty For Roster: " + (nurseDoesBin[PTHTnurses[0]]+1)  + " first nurse: " + (PTHTnurses[0]+1)
+			//	+ "\n"+text); 
+		textBin=text;
+	 return totPenalty;
+	}
+	public void bubbleSortPref()
+	{
+		 int tempVar;
+		 int tempNurse;
+	        for (int i = 0; i < prefArrayRandom.length; i++)
+	        {
+	                 for(int j = 1; j < prefArrayRandom.length-i; j++)
+	                 {
+	                         if(prefArrayRandom[j-1] > prefArrayRandom[j])
+	                         {
+	                         tempVar = prefArrayRandom [j-1];
+	                         tempNurse= PTHTnurses[j -1];
+	                         prefArrayRandom [j - 1]= prefArrayRandom [j];
+	                         PTHTnurses[j - 1]=PTHTnurses[j];
+	                         prefArrayRandom [j] = tempVar;
+	                         PTHTnurses[j]= tempNurse;
+	                         }
+	                 }
+	        }
+	}
+	
+	
+	public boolean checkSwitchable(int nurse,int otherNurse, int day,
+			int shift, int otherShift,
+			int prefShiftNurse,int prefShiftOtherNurse,
+			int prefShiftNurseForOtherShift, int prefShiftOtherNurseForShift)
+	{
+			if(day!=0 && otherShift!=numberOfShifts-1 && shift!=numberOfShifts-1){ //de shiften verschillend van de free shift!
+				if(prefShiftOtherNurseForShift<=prefShiftOtherNurse//is de preferentie voor de nieuwe shift groter dan de huidige shift
+					 && prefShiftOtherNurseForShift<10 //wilt de andere nurse die shift doen
+					  &&prefShiftNurseForOtherShift<10) //wilt de nurse die andere shift doen
+					return checkNightShiftRule(nurse,day,otherShift); 
+				else return false; 
+			}
+			else return false;
+	}
+	public boolean enoughReqNurses(int nurse,int day,int type,int sh)
+	{	
+		// doorgegeven type (nurseType[]) is 1 of 2!!
+		if (type1NurseAssignedToType2Roster.contains(nurse)){
+			if (scheduled[type][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh])){
+				////System.out.println("1TO2 Day "+ (day+1) + " S" + sh + ",=> "+scheduled[type][day][sh]+"/"+db.getReqNumberOfNursesPerShiftAndTypeList(type,sh));
+				return true;
+				}
+			else return false;
+			}
+		else{
+			if (scheduled[type-1][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh])){
+				////System.out.println("Day "+ (day+1) + " S" + sh + ",  => "+scheduled[type-1][day][sh]+"/"+db.getReqNumberOfNursesPerShiftAndTypeList(type-1,sh));
+				return true;
+				}
+			else return false;
+			}
+	}	
+	public boolean daysOfConsWork(int nurse, int day) //rond welke dag men nog moet checken
+	{
+		int daysWithoutBreak=1;  
+		int i=1; 
+		while((day-i)>=0 && nurseSchedule[nurse][day-i] != (numberOfShifts-1) && i<= MAXCONSDAYSOFWORK){  //while(de vorige dag verschillend is van een vrije shift
+			daysWithoutBreak +=1; 
+			i++; 
+		}
+		i=1; 
+		while((day+i)<DAYS && nurseSchedule[nurse][day+i] != (numberOfShifts-1) && i<=MAXCONSDAYSOFWORK){ //while(de volgende dag verschillend is van een vrije shift)
+			daysWithoutBreak +=1; 
+			i++; 
+		}
+		if(daysWithoutBreak<= MAXCONSDAYSOFWORK && daysWithoutBreak>1){ //MAXCONSDAYSOFWORK=5
+			return true; 
+		}
+		else 
+			return false; 	
+	}
+	public boolean daysOfFree(int nurse, int day)
+	{
+		int freeDays =1;
+		int i=1;
+		while((day-i)>=0 && nurseSchedule[nurse][day-i] == (numberOfShifts-1) ){  //while(de vorige dag verschillend is van een vrije shift
+			freeDays +=1; 
+			i++; 
+		}
+		while((day+i)<DAYS && nurseSchedule[nurse][day+i] == (numberOfShifts-1) ){ //while(de volgende dag verschillend is van een vrije shift)
+			freeDays +=1; 
+			i++; 
+		}
+		if(freeDays<= 2 && freeDays>1){ //MAXCONSDAYSOFWORK=5
+			return true; 
+		}
+		else 
+			return false; 	
+		
+	}
+ 	public void verticalSwapping(){ //functie om op dezelfde dag een shift te switchen. 
+            
+            reader r = new reader();
+            
+		boolean switched=false;
+		loadScheduled();
+		int numberOtherNurse=0;
+		////System.out.println("\n__________________________________Start Vertical Swapping__________________________________");
+		////System.out.println("number of nurses of type 1: "+numberOfNursesType1);
+		////System.out.println("number of nurses of type 2: "+numberOfNursesType2);
+		////System.out.println("______________________type 1________________________");
+		for(int n=0;n<numberOfNursesType1;n++){ // alle nurses nagaan van die preferences //wat zit er achter numberOfNurses???
+			if(!type1NurseAssignedToType2Roster.contains(n)){	//enkel die type1 nurses die type1 roster doen
+				for(int d=0;d< DAYS;d++){ //al hun toegewezen shifts nagaan (met TOTALDAYS= 28) 
+						int shift = nurseSchedule[n][d];//javashift
+						int prefShiftNurse=r.readPreference(n, d, shiftDecoding(shift));
+						if(prefShiftNurse >= 10){ //als de nurse een shift heeft met een preferentie boven 10   
+							//welke shiften mag de nurse nog doen?
+							while(numberOtherNurse < numberOfNursesType1 && switched==false && !type1NurseAssignedToType2Roster.contains(numberOtherNurse) ){ //loop voor de andere nurses af te gaan, stopt ook wanneer een switch werd gedaan
+								int otherShift= nurseSchedule[numberOtherNurse][d];
+								int prefShiftOtherNurse=r.readPreference(numberOtherNurse,d, shiftDecoding(otherShift));
+								int prefShiftNurseForOtherShift = r.readPreference(n, d, shiftDecoding(otherShift));
+								int prefShiftOtherNurseForShift = r.readPreference(numberOtherNurse, d, shiftDecoding(shift));
+								
+								
+								if(checkSwitchable(n,numberOtherNurse,d,shift, otherShift,prefShiftNurse, prefShiftOtherNurse,
+										prefShiftNurseForOtherShift, prefShiftOtherNurseForShift)==true){
+									//hoevaak hierin
+									/*//System.out.println("SWITCH from: nurseSchedule["+(n+1) +"]["+(d+1)+"]=" + shiftDecoding(nurseSchedule[n][d])
+											+ " to nurseSchedule["+(n+1) +"]["+(d+1)+"]=" + shiftDecoding(otherShift)
+											+ "\n and from nurseSchedule["+(numberOtherNurse+1) +"]["+(d+1)+"]=" + shiftDecoding(nurseSchedule[numberOtherNurse][d])
+											+ " to nurseSchedule["+(numberOtherNurse+1) +"]["+(d+1)+"]=" + shiftDecoding(shift));*/
+									nurseSchedule[n][d]=otherShift;
+									nurseSchedule[numberOtherNurse][d]=shift;
+									loadScheduled();
+									switched=true;
+									//System.out.println("Vertical: SWITCHED on day"+( d+ 1 )+ " for nurse"+(n+1)+ " (Shift"+ shiftDecoding(shift)
+											//+ ") ("+prefShiftNurse + " to " + prefShiftNurseForOtherShift + ") with nurse "+(numberOtherNurse+1)+" (OtherShift"+ shiftDecoding(otherShift) + ") ("+prefShiftOtherNurse + " to " + prefShiftOtherNurseForShift + ")");
+									
+								}
+								else{
+									numberOtherNurse +=1; 
+								}
+							}
+							numberOtherNurse=0; 
+						}
+						switched=false;
+					}
+			}
+		}
+		////System.out.println("______________________type 2______________________");
+		//System.out.println("T1 to T2" + type1NurseAssignedToType2Roster.toString());
+		String gg="nursesR2: ";
+		for( int i =0; i<nursesR2.length;i++){
+		gg+=	nursesR2[i] + ", ";
+		}
+		//System.out.println(gg);
+
+		int f =0; //index numberOtherNurse
+		numberOtherNurse=nursesR2[f]; 
+		for(int n=0;n<nursesR2.length;n++){ // alle nurses nagaan van die preferences 
+			for(int d=0;d< DAYS;d++){ //al hun toegewezen shifts nagaan (met TOTALdS= 28) 
+				int shift = nurseSchedule[nursesR2[n]][d];
+				int prefShiftNurse=db.getNursePreferencesTotal(nursesR2[n], d, shiftDecoding(shift));
+				if(prefShiftNurse >= 10){ //als de nurse een shift heeft met een preferentie boven 10
+					//welke shiften mag de nurse nog doen?
+					while(numberOtherNurse < numberOfNurses && switched==false ){ //loop voor de andere nurses af te gaan, stopt ook wanneer een switch werd gedaan
+						int otherShift= nurseSchedule[numberOtherNurse][d];
+						int prefShiftOtherNurse=r.readPreference(numberOtherNurse, d, shiftDecoding(otherShift));//current pref of other nurse
+						int prefShiftNurseForOtherShift = r.readPreference(nursesR2[n], d, shiftDecoding(otherShift));//other shift for this nurse
+						int prefShiftOtherNurseForShift = r.readPreference(numberOtherNurse, d, shiftDecoding(shift));//other shift for other nurse
+						loadScheduled();
+						if(checkSwitchable(nursesR2[n],numberOtherNurse,d,shift, otherShift,prefShiftNurse, prefShiftOtherNurse,
+								prefShiftNurseForOtherShift, prefShiftOtherNurseForShift)==true){
+							//hoevaak hierin
+							//System.out.println("SWITCH from: nurseSchedule["+(nursesR2[n]+1) +"]["+(d+1)+"]=" + shiftDecoding(nurseSchedule[nursesR2[n]][d])
+									//+ " to nurseSchedule["+(nursesR2[n]+1) +"]["+(d+1)+"]=" + shiftDecoding(otherShift)
+								//	+ "\n and from nurseSchedule["+(numberOtherNurse+1) +"]["+(d+1)+"]=" + shiftDecoding(nurseSchedule[numberOtherNurse][d])
+								//	+ " to nurseSchedule["+(numberOtherNurse+1) +"]["+(d+1)+"]=" + shiftDecoding(shift));
+							nurseSchedule[nursesR2[n]][d]=otherShift;
+							nurseSchedule[numberOtherNurse][d]=shift;
+							loadScheduled();
+							switched=true;
+						}
+						else{
+							////System.out.println("\nNOT SWITCHED on day "+( d+ 1 )+ " for nurse(includes 0!) "+(nursesR2[n]) + " (Shift"+ shift + ") ("+prefShiftNurse + " to " + prefShiftNurseForOtherShift + ") with nurse "+(numberOtherNurse)+" (OtherShift"+ otherShift + ") ("+prefShiftOtherNurse + " to " + prefShiftOtherNurseForShift + ")");
+							f++;
+							if (f<nursesR2.length)
+								numberOtherNurse = nursesR2[f]; 
+							else
+								numberOtherNurse=numberOfNurses;
+						}
+					}
+					f=0;
+					numberOtherNurse=nursesR2[f]; 
+				}
+				switched=false;
+			}
+		}
+		
+		
+		
+		
+	}
+	public void horizontalSwapping()
+	{ 
+            reader r = new reader();
+            
+		loadScheduled();
+		boolean vlag=false;
+		String output="";
+		
+		////System.out.println("\n_______________________________Start Horizontal Swapping___________________________________");
+		
+		int dayLowPref=0;
+   		int shiftLowPref=0;
+   		for(int n=0;n<numberOfNurses;n++){ 
+   			////System.out.println("______________________________NURSE: " + (n+1) +"_______________________\n");
+				
+   			for(int day=0;day<DAYS;day++){
+		   			int shift = nurseSchedule[n][day]; 
+		   			if(shift<numberOfShifts-1 && enoughReqNurses(n,day,nurseType[n],shiftDecoding(shift))){
+		   				int prefShiftNurse=r.readPreference(n, day, shiftDecoding(shift)); 
+		   				if(prefShiftNurse>=15 ){
+		   					int low =10; 
+		   					for (int d = 0; d < DAYS; d++){ 
+		   						////System.out.println("Day: " + (d+1) + " has shift " + nurseSchedule[n][d]);
+		   						if(nurseSchedule[n][d]==numberOfShifts-1){
+	   								for(int s=0;s<numberOfShifts-1;s++){
+		   					   			
+		   								if (r.readPreference(n, d, shiftDecoding(s))<low 
+		   										&& checkNightShiftRule(n,d,s)
+		   										&& daysOfConsWork(n, d) ){//will save that day and shift with the lowest possible preference and that respects the nightShiftRule
+		   									low = r.readPreference(n, d, shiftDecoding(s));
+		   									dayLowPref=d;
+		   									shiftLowPref=s;
+		   									vlag=true;
+		   									////System.out.println("\tDay " + (day+1) + " S" + shiftDecoding(shift) + "("+ prefShiftNurse 
+		   				   					//	+ ")\tDay" + (dayLowPref+1)+ " S" + shiftDecoding(shiftLowPref) + "("+ low+ ")");
+		   				   				}
+		   							}
+		   						}
+		   					}
+		   					if(vlag){
+		   						loadScheduled();//scheduled[][][] opnieuw vullen
+		   						output=("SWITCHED Day " + (day+1) + " S" + shiftDecoding(shift) + "("+ prefShiftNurse 
+				   							+ ")\tDay " + (dayLowPref+1)+ " S" + shiftDecoding(nurseSchedule[n][dayLowPref]) + "("
+				   							+ r.readPreference(n, dayLowPref, shiftDecoding(nurseSchedule[n][dayLowPref]))+ ")");
+				   				//aanpassing nurseSchedule
+			   					nurseSchedule[n][dayLowPref]=shiftLowPref;
+			   					nurseSchedule[n][day]=numberOfShifts-1;
+			   					
+			   					output+=("\n\tto Day " + (day+1) + " S" + shiftDecoding(nurseSchedule[n][day])+ "("
+			   							+ r.readPreference(n, day, shiftDecoding(nurseSchedule[n][day])) +")\tDay " 
+			   							+ (dayLowPref+1) + " S" + shiftDecoding(nurseSchedule[n][dayLowPref])+ "("
+			   							+ r.readPreference(n, dayLowPref, shiftDecoding(nurseSchedule[n][dayLowPref])) +")");
+			   					//
+			   					//System.out.println("NURSE: " + (n+1) + ": " +output);
+			   					
+			   					loadScheduled();//scheduled[][][] opnieuw vullen
+			   					dayLowPref=0;
+			   					shiftLowPref=0;
+			   					low=10;
+			   					vlag=false;
+			   							
+		   					}
+		   				}
+		   			}
+		   	}
+   		}
+   		
+	 }
+	public void avoidIslands()
+	{
+		////System.out.println("_____START avoidIslands____");
+			
+            reader r = new reader();
+		 
+	   	
+		for(int n=0;n < numberOfNurses;n++) //per nurse nagaan 
+		{ 
+			int dayLowPref=999;
+		   	int shiftLowPref=999;
+		   	int shift =0;
+			////System.out.println("\nNURSE: "+(n+1));
+			int consDaysOfWork=0; 
+			
+			loadScheduled(); 
+			for(int day=0; day<DAYS; day++){ //dagen afgaan 
+			shift = nurseSchedule[n][day]; 
+				boolean founded =false; 
+				
+				if(shift != (numberOfShifts-1)){ //als de shift verschillend is aan de free shift
+					consDaysOfWork+=1;
+					////System.out.print("Day " + (day+1) + "nurse works on Shift " + shiftDecoding(nurseSchedule[n][day])); 
+					////System.out.println("\tConsecDaysOfWork: " + consDaysOfWork);
+				}
+				else{ //als de shift een free shift is
+					int tempDay=0; 
+					int tempShift=0; 
+					if(consDaysOfWork==1){ //1TJES WEGWERKEN!!
+						////System.out.println("ISLAND of one day on day "+(day)); //er stond day+1??
+						if(enoughReqNurses(n,day-1,nurseType[n],shiftDecoding(nurseSchedule[n][day-1]))==true){
+							tempDay=(day-1); 
+							tempShift=nurseSchedule[n][day-1];
+							nurseSchedule[n][day-1]=numberOfShifts-1; //wordt free shift 
+							////System.out.println("--> NEW FREE shift on userday "+ (day+1)); 
+							founded =true;
+					    } 
+					}	
+					else if(consDaysOfWork>=MAXCONSDAYSOFWORK){//TEVEEL DAGEN!
+						////System.out.println("TOO MANY DAYS of work on day " + (day) + ": " + consDaysOfWork  ); //er stond day +1 maar het zou day-1 moeten zijn +1 voor de echted ag
+						if(founded==false ){ //zolang we geen dag hebben gevonden verder zoeken
+							loadScheduled();
+							int j=1; //de voorgaande dag is degene die de werkende dag is. 
+							while(day-j>=0 && nurseSchedule[n][day-j]!=(numberOfShifts-1) && founded ==false) //day niet neg && die dag werkt men && nog geen dag gevonden
+							{
+								////System.out.println("While loop:  dag:" + (day-j+1) +  " shift: " + shiftDecoding(nurseSchedule[n][day-j]) 
+										//+ " Pref " +  db.getNursePreferencesTotal(n,day-j,shiftDecoding(nurseSchedule[n][day-j])));
+								if(r.readPreference(n,day-j,shiftDecoding(nurseSchedule[n][day-j])) > 15 //preferences boven 15
+										&& enoughReqNurses(n,day-j,nurseType[n],shiftDecoding(nurseSchedule[n][day-j]))) //genoeg nurses op die shift
+								{ 
+									tempDay=(day-j); 
+									tempShift=nurseSchedule[n][day-j];
+									
+										nurseSchedule[n][day-j]=numberOfShifts-1; //wordt free shift
+										////System.out.println("--> NEW FREE shift on userday"+ (day-j+1)); 
+										founded =true;
+								}
+								j++; 
+							}
+							if(founded==false) //als geen enkele dag boven de 15 zit van de dagen of voldoet enoughReqNurses
+							{
+								if(enoughReqNurses(n,day-1,nurseType[n],shiftDecoding(nurseSchedule[n][day-1]))) //mag er een nurse worden verwijdert op de laatste dag van die serie 
+								{
+									
+									tempDay=(day-1); 
+									tempShift=nurseSchedule[n][day-1];
+									nurseSchedule[n][day-1]=numberOfShifts-1; //die dag wordt op nul gezet
+									////System.out.println("--> NEW FREE shift on userday"+ (day)); 
+									founded =true;
+								}
+								else if(enoughReqNurses(n,day-consDaysOfWork+1,nurseType[n],shiftDecoding(nurseSchedule[n][day-consDaysOfWork+1]))) //mag er een nurse worden verwijdert op de eerste dag van die serie 
+								{
+									tempDay=(day-consDaysOfWork+1); 
+									tempShift=nurseSchedule[n][day-consDaysOfWork+1];
+									
+									nurseSchedule[n][day-consDaysOfWork+1]=numberOfShifts-1; //die dag wordt op nul gezet
+									////System.out.println("--> NEW FREE (first) shift on userday"+ (day-consDaysOfWork)); 
+									founded =true;
+								}
+								else{
+									////System.out.println("NOG EEEN PROBLEEEEEM"); 
+								}
+									
+							} 
+						} 
+					}		
+					else //NO PROBLEM 
+						consDaysOfWork=0; 
+					
+					
+					loadScheduled();
+					boolean adjusted=false;
+					if(founded ==true)
+					{   
+						//vrije dag vinden met een preferentie voor te werken en een shift dat voldoet aan de night shift rule en daysofconsWork 
+						int low=200; 
+						for(int d=0; d<DAYS; d++)
+						{   
+							if(nurseSchedule[n][d]== numberOfShifts-1) //if gelijk aan vrije dag
+							{	
+								if(daysOfConsWork(n,d)==true) //als het toegelaten is om er een dag bij te zetten
+								{
+									for(int s=0; s<numberOfShifts-1;s++) //nagaan welke shift het beste (niet de vrije) 
+									{
+										if(checkNightShiftRule(n,d, s) ==true) //voldoet aan night shift rule 
+										{ 
+											if(r.readPreference(n,d,shiftDecoding(s))<low) 
+											{
+												low = r.readPreference(n, d, shiftDecoding(s));
+												dayLowPref=d;
+												shiftLowPref=s;
+												
+												adjusted=true;
+											}
+										}
+									}
+								 }
+							}
+						}
+						if(adjusted){
+							nurseSchedule[n][dayLowPref]=shiftLowPref;
+							loadScheduled();
+						}
+						////System.out.println("---> NEW shift voor nurse "+(n+1)+" op dag "+ (day+1)+" S" + shiftDecoding(shiftLowPref) + " PREF:  " + shiftLowPref); 
+					}
+					consDaysOfWork=0; 
+					if (!adjusted && founded)
+					{
+						nurseSchedule[n][tempDay]=tempShift;
+					}
+					adjusted=false;
+				}
+			}//alle dage afgegaan
+		}//alle  nurses afgegaan
+		////System.out.println("____END avoidIslands____"); 
+	}//close avoidIslands
+	public int howMuchSurplus(int nurse,int day,int type,int sh)
+	{	
+		// doorgegeven type (nurseType[]) is 1 of 2!!
+		if (type1NurseAssignedToType2Roster.contains(nurse)){
+			if (scheduled[type][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh])){
+				return (scheduled[type][day][sh]-db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh]));
+				}
+			else return 0;
+			}
+		else{
+			
+			if (scheduled[type-1][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh])){
+				return (scheduled[type-1][day][sh]-db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh]));
+				}
+			else return 0;
+			}
+	}	
+	public boolean checkNightShiftRule(int nurse,int day, int shift) //GROVE FOUT!!! 
+	{
+			if (shift==0)//als de shift waarmee men wilt wisselen een early shift is dan 
+			{
+				if(day==0 || nurseSchedule[nurse][day-1]==0|| nurseSchedule[nurse][day-1]==5)//de vorige dag E of F
+					return true; //alle shiften zijn toegelaten op de volgende dag
+				else return false; 
+			}
+		    else if(shift==1) //als de shift een DAY1 shift is dan 
+			{
+				if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1|| nurseSchedule[nurse][day-1]==5)//de vorige dag E,D1,F toegelaten
+				{
+					if(day==DAYS-1 || nurseSchedule[nurse][day+1]!=0) //einde vd maand of de dag nadien verschillend van de early
+						return true; 
+					else return false; 
+				}
+				else return false; 
+					
+			}
+		    else if(shift==2)//als de shift een DAY2 is 
+		    {
+		    	if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1 || nurseSchedule[nurse][day-1]==2|| nurseSchedule[nurse][day-1]==5)//vorige dag is E,D1,D2,F toegelaten
+				{
+					if(day==DAYS-1 || nurseSchedule[nurse][day+1]==2 || nurseSchedule[nurse][day+1]==3|| nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of de dag nadien 
+						return true; 
+					else return false; 
+				}
+		    	else return false; 
+		    }
+		    else if(shift==3)//als de shift een L is
+		    {
+		    	if(day==0 || nurseSchedule[nurse][day-1]!=4)//vorige dag is E,D1,D2,L,F toegelaten (dus alles behalve ne night)
+				{
+					if(day==DAYS-1 || nurseSchedule[nurse][day+1]==3 ||  nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of de dag nadien 
+						return true; 
+					else return false; 
+				}
+		    	else return false; 
+		    }	
+		    else if(shift==4)//shift N
+		    {
+		    	//vorige dag is alles toegelaten
+		    	if(day==DAYS-1 || nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of N & F toegelaten 
+					return true; 
+		    	else return false; 
+				
+		    }
+		    else if(shift==5)//shift F
+		    	return true; //alles mag de dag ervoor en de dag nadien
+		    else return false; 
+	}
+	public void rearrangeSurplusRandom()
+	{
+            
+            reader r = new reader();
+            
+		//System.out.println(""); 
+		//System.out.println(""); 
+		//System.out.println("_________start reArrangeSurplusRandom__________"); 
+		boolean found =false; 
+		
+		for(int n=0;n<numberOfNursesType1;n++)//TYPE 1 nurses
+		{
+			if(!type1NurseAssignedToType2Roster.contains(n))
+			{
+				//System.out.println("________________________________Nurse: "+(n+1) + "________________________");
+				for(int d=0; d<DAYS; d++)//alle dagen d afgaan 
+				{
+					found=false; 
+					////System.out.println("    CHECK UP: Not FRee: "+(nurseSchedule[n][d]!=numberOfShifts-1)+" && Enough nurses "+(enoughReqNurses(n,d,nurseType[n],shiftDecoding(nurseSchedule[n][d])))); 
+					
+					if(nurseSchedule[n][d]!=numberOfShifts-1 && howMuchSurplus(n,d,nurseType[n],shiftDecoding(nurseSchedule[n][d]))>0 && howMuchSurplus(n,d,nurseType[n],shiftDecoding(nurseSchedule[n][d]))<2) //men werkt en genoeg op die shift
+					{
+						//zoeken naar de nurse op die shift met de hoogste penalty voor die shift
+						int highest=0; 
+						int nurseHighest=100; 
+						//System.out.println("start search: nursehighest = "+nurseHighest); 
+						 
+						int on=0; 
+						
+						while(on < numberOfNursesType1)
+						{
+						   ////System.out.println("nurseSchedule[n][d] "+nurseSchedule[n][d]+" == "+nurseSchedule[on][d]+" nurseSchedule[on][d]  ( d: "+d+" n: "+n+" on: "+on+")"); 
+						   
+						   if(nurseSchedule[n][d]==nurseSchedule[on][d] && type1NurseAssignedToType2Roster.contains(on)==false)
+						   {   
+							   if(r.readPreference(on,d,shiftDecoding(nurseSchedule[on][d])) > highest) 
+							   {
+								  if(r.readPreference(on, d, shiftDecoding(nurseSchedule[on][d]))>=10){
+									   	highest = r.readPreference(on, d, shiftDecoding(nurseSchedule[on][d]));
+									   	nurseHighest=on;
+									   	//System.out.println("NURSEHIGHEST "+(nurseHighest+1)+" GEVONDEN met pref "+db.getNursePreferencesTotal(on, d, shiftDecoding(nurseSchedule[on][d]))); 
+								  }
+							   }
+							}
+						    on++; 
+						    
+						 }
+						//System.out.println("alle nurses afgelopen en nurseHighest "+nurseHighest); 
+					
+						//plaats die op een andere dag dat mag voor haar preferentie en voor nightshiftrule en voor consecutive days eventueel. 
+						int od=0; 
+						
+						while(nurseHighest!=100 && found==false && od<DAYS)//andere dag zoeken met een vrije shift
+						{
+							
+							////System.out.println("   Search for day "+od+ " to find other shift for nurseHighest "+nurseHighest); 
+							
+							////System.out.println("   CHECKUP: NOT SAME DAY: "+ (od!=d) + " gevonden?: " +(found==false)+" fREE: "+ (nurseSchedule[nurseHighest][od]==numberOfShifts-1)); 
+
+							if(od!=d && found==false && nurseSchedule[nurseHighest][od]==numberOfShifts-1)
+							{
+								int s=0; 
+								while(found==false && s<numberOfShifts-1)
+								{
+									////System.out.println("    CHECKUP: night shift rule: "+checkNightShiftRule(nurseHighest,d,s) +" && daysOfConsWork: "+daysOfConsWork(nurseHighest, d)); 
+									
+									if(checkNightShiftRule(nurseHighest,d,s) && daysOfConsWork(nurseHighest, od)  )
+									{
+										//System.out.println("---->REARRANGE: nurse "+(nurseHighest+1)+" stops with working on day "
+												//+(d+1)+" S: "+shiftDecoding(nurseSchedule[nurseHighest][d])+" and starts on day "+(od+1)+" S: "+shiftDecoding(s)
+												//);
+										nurseSchedule[nurseHighest][d] = (numberOfShifts-1); //shift op nul zetten
+										nurseSchedule[nurseHighest][od]=s;
+										
+										
+										loadScheduled(); 
+										//System.out.println("--------->herladen scheduled"); 
+										found=true; //niet meer zoeken om een andere nurses zoeken
+										nurseHighest=100; 
+									}
+									s++; 
+	
+								}
+							}
+							od++; 
+						}	
+					}	
+				}
+			}
+		}
+		found=false;
+		//System.out.println("xxxxxxxxxxxx voor type 2 xxxxxxxxxxxxx");
+		
+		for(int n=0;n<nursesR2.length;n++)//TYPE  nurses
+		{
+			//System.out.println("________________________________Nurse: "+(nursesR2[n]+1) + "________________________");
+			////System.out.println(type1NurseAssignedToType2Roster.toString());
+			for(int d=0; d<DAYS; d++)//alle dagen d afgaan 
+			{
+				found=false; 
+				loadScheduled();
+				if(nurseSchedule[nursesR2[n]][d]!=(numberOfShifts-1) 
+						&& howMuchSurplus(nursesR2[n],d,nurseType[nursesR2[n]],shiftDecoding(nurseSchedule[nursesR2[n]][d]))>0 
+						&& howMuchSurplus(nursesR2[n],d,nurseType[nursesR2[n]],shiftDecoding(nurseSchedule[nursesR2[n]][d]))<4 ) //men werkt en genoeg op die shift
+				{
+					int highest=0; 
+					int nurseHighest=100; 
+					
+					int on=0; 
+					
+					while(on<nursesR2.length)
+					{
+					   if(nurseSchedule[nursesR2[n]][d]==nurseSchedule[nursesR2[on]][d] )//andere nurse zoeken die dan werkt!
+					   {
+						   if(r.readPreference(nursesR2[on],d,shiftDecoding(nurseSchedule[nursesR2[on]][d]))>highest) 
+						   {
+							   if(r.readPreference(nursesR2[on],d,shiftDecoding(nurseSchedule[nursesR2[on]][d])) >=10)
+							   {
+								   highest = r.readPreference(on, d, shiftDecoding(nurseSchedule[nursesR2[on]][d]));
+								   nurseHighest=nursesR2[on]; 
+							 	}  
+							   
+						   }
+						}
+					    on++; 
+					 }
+				
+					//plaats die op een andere dag dat mag voor haar preferentie en voor nightshiftrule en voor consecutive days eventueel. 
+					int od=0; 
+					
+					while(nurseHighest!=100 && found==false && od<DAYS )//andere dag zoeken
+					{
+						////System.out.println("day "+od+ " with nurseHighest "+nurseHighest+", we'll search another day to switch with"); 
+
+						if(od!=d && found==false && nurseSchedule[nurseHighest][od]==numberOfShifts-1)//shift Shift niet de vrije shift bekijken
+						{						
+							int s=0; 
+							while(found == false && s< numberOfShifts-1)
+							{
+								if(checkNightShiftRule(nurseHighest,d,s) && daysOfConsWork(nurseHighest, od) )
+								{
+										//System.out.println("-->REARRANGE: nurse "+(nurseHighest+1)+" stops with working on day "
+										//+(d+1)+" S: "+shiftDecoding(nurseSchedule[nurseHighest][d])+" and starts on day "+(od+1)+" S: "+(shiftDecoding(s)));
+												
+										nurseSchedule[nurseHighest][d] = (numberOfShifts-1); //shift op nul zetten
+										nurseSchedule[nurseHighest][od]=s;
+										
+										loadScheduled(); 
+										//System.out.println("--->herladen scheduled"); 
+										found=true; //niet meer zoeken om een andere nurses zoeken
+										nurseHighest=100; 	
+								}
+								s++; 
+							}
+							
+						}
+						od++; 
+					}	
+				}
+			}
+		}
+		//System.out.println("________stop rearrange random surplus____________" ); 
+	}
+        
+        public void printOutput(){
+            
+            reader re = new reader();
+            
+		int workingDays=0;
+		int penalty=0;
+		int totalPenalty=0;
+		String str="";
+		textMonthlyRoster="There are " + assignedNurses.size() + " nurses assigned:\n";
+		String txt="";
+		costs();
+		
+		for (int n =0;n<numberOfNurses;n++)	{workingDays=0;penalty=0;
+			if (assignedNurses.contains(n))	{
+				textMonthlyRoster+="\tNurse " + db.getArrayNurse(n).getNurseID() + ": " + nurseEmploymentRate[n]*100 + "% employed does roster " + (nurseDoes[n]+1)+"\n";
+				for (int d=0; d<DAYS;d++){
+					if(shiftDecoding(nurseSchedule[n][d])==0)
+						str=" FR("+ re.readPreference(n, d, shiftDecoding(nurseSchedule[n][d])) +")\t";
+					else
+						str=" S" + shiftDecoding(nurseSchedule[n][d])+ "("+ 
+								re.readPreference(n, d, shiftDecoding(nurseSchedule[n][d])) +")\t";
+					textMonthlyRoster+="Day " + (d+1) + str;
+					if(shiftDecoding(nurseSchedule[n][d])!=0)
+							workingDays++;
+					penalty+=db.getNursePreferencesTotal(n, d, shiftDecoding(nurseSchedule[n][d]));
+					}
+				totalPenalty+=penalty;
+				}
+			else
+				textMonthlyRoster+="Nurse " + (n+1) + ": " + nurseEmploymentRate[n]*100 + "% employed is currently not employed\n";
+			textMonthlyRoster+="\n==> works: " + workingDays +" days of max allowed: " + maxAss[n] + ". Total PreferenceScore: " + penalty +"\n\n";
+			}
+		for(int r=0;r<numberOfRostersType1+numberOfRostersType2;r++){
+			for(int n=0; n<numberOfNurses; n++){
+				if(nurseDoes[n]==r)
+					txt+="Roster " + (r+1)+ " ==> nurse " + db.getArrayNurse(n).getNurseID() +"\n";
+			}
+		}
+		////System.out.println("SCHEDULE: \n" + textMonthlyRoster);
+			JLabel penaltyLabel=new JLabel("TOTAL PREFERENCE SCORE " + totalPenalty +"\nTOTAL COST " + costTotal + "(Type1: " + costType1 + ", Type2: " + costType2 +")");
+			penaltyLabel.setForeground(Color.ORANGE);
+			JTextArea textArea = new JTextArea(textMonthlyRoster);
+			JTextArea textArea2 = new JTextArea(txt);
+			JScrollPane scrollPane = new JScrollPane(textArea);  
+			JScrollPane scrollPane2 = new JScrollPane(textArea2); 
+			textArea.setLineWrap(true);  
+			textArea.setWrapStyleWord(true); 
+			textArea2.setLineWrap(true);  
+			textArea2.setWrapStyleWord(true);
+			JPanel myPanel=new JPanel();
+			myPanel.setLayout(new BorderLayout(10,10));
+			scrollPane.setPreferredSize(new Dimension (690, 400) );
+			scrollPane2.setPreferredSize( new Dimension(180, 400) );
+			myPanel.add(scrollPane, "West");
+			myPanel.add(scrollPane2, "East");
+			myPanel.add(penaltyLabel, "South");
+			JOptionPane.showMessageDialog(null, myPanel, "Summary", JOptionPane.INFORMATION_MESSAGE);
+		
+		}
+        
+        public void loadScheduled()
+		{
+			for (int t=0;t<TYPES;t++)
+			{
+				for (int d=0;d<DAYS;d++)
+				{
+					for (int s=0;s<numberOfShifts;s++)
+						{
+						scheduled[t][d][s]=0;
+						////System.out.println("number of shifts: " +  numberOfShifts + " scheduled: for type "
+						//+(t+1) + " on day " + (d+1) + " and usershift: "+ s+  " is " + scheduled[t][d][s]);
+						}
+				}
+			}
+			for (int n=0;n<numberOfNurses;n++){
+				if (assignedNurses.contains(n)){
+					evaluateColumnSimplified(n);
+				}
+			}
+		}
+        
+        public void evaluateColumnSimplified(int n)
+		{
+                    reader r = new reader();
+                    
+			//die 'i' hier moet een 'n' zijn, is 'een' nurse
+			hh =0;
+			countAss=0; 
+			countConsecWork=0;
+			countConsec=0;
+			for (int s=0;s<numberOfShifts;s++)
+				countShift[s]=0;
+			
+			a=nurseSchedule[n][0];//nurse, days, day 1  getNurseForRosterType1[r]=n;
+			violations[0] += r.readPreference(n, 0, shiftDecoding(nurseSchedule[n][0]));
+			
+			if (a<numberOfShifts-1)//er wordt gewerkt
+			{countAss++; countConsecWork++;countConsec++;}
+			
+			countShift[a]++;
+			if (type1NurseAssignedToType2Roster.contains(n))
+				scheduled[nurseType[n]][0][shiftDecoding(nurseSchedule[n][0])]++;
+			else
+				scheduled[nurseType[n]-1][0][shiftDecoding(nurseSchedule[n][0])]++;
+			
+			
+			
+			for (int d=1;d<DAYS;d++)
+			{
+				violations[0]+= r.readPreference(n, d, shiftDecoding(nurseSchedule[n][d]));
+				
+				int shiftCurrentDay = nurseSchedule[n][d];
+				int shiftPreviousDay = nurseSchedule[n][d-1];
+				////System.out.println("SUPPORT: nurse " + db.getArrayNurse(n).getNurseID() + " shift day " + (d+1) + " = " +cyclicRostersType1[getRosterForNurseType1[n]][d] 
+				//		+" day before " + d + " =  " +cyclicRostersType1[getRosterForNurseType1[n]][d-1] );
+				
+				if (type1NurseAssignedToType2Roster.contains(n))
+					scheduled[nurseType[n]][d][shiftDecoding(shiftCurrentDay)]++;
+				else
+					scheduled[nurseType[n]-1][d][shiftDecoding(shiftCurrentDay)]++;
+								
+				// Minimum - Maximum number of assignments (assignments of each shift type)
+				if (shiftCurrentDay<numberOfShifts-1)
+				{
+					countAss++;
+					countShift[shiftCurrentDay]++;
+					countConsecWork++;
+				}
+				// Minimum - Maximum number of consecutive assignments
+				else if ((shiftCurrentDay==numberOfShifts-1) &&(shiftPreviousDay<numberOfShifts-1)) // doesn't work today, did work yesterday
+				{
+					if (countConsecWork>maxConsecWork[n])
+					{
+						violations[1]++;// Sum the number of times the maximum consecutive assignments constraint is violated
+						//System.out.println("CONSTRAINT 1 nurse " + (n+1) + "D" + (d+1) + ":countConsecWork " + countConsecWork + " maxConsecWork[n] " + maxConsecWork[n]);
+					}
+					countConsecWork=0;
+				}
+				// Minimum - Maximum number of consecutive assignments of same working shifts
+				if (shiftCurrentDay!=shiftPreviousDay)
+				{
+					
+					if (countConsec > maxConsecPerShiftType[n][(shiftPreviousDay)] )
+					{
+						violations[2]++; // Sum the number of times the maximum consecutive assignments of the same shift type constraint is violated	
+						////System.out.println("CONSTRAINT 2: concerns nurse" + db.getArrayNurse(n).getNurseID() + 
+						//" countConsec: " + countConsec 	+ " compared to max: " + maxConsecPerShiftType[n][(shiftPreviousDay)]
+						//+ " results in total of " + violations[2]);
+					}
+					countConsec =0;
+					countConsec++;
+				}
+				else
+				{
+					countConsec++;
+				}
+			}
+			if (countAss< minAss[n])
+				violations[3]++; // Sum the number of times the constraint 'Minimum number of assignments' is violated.
+			if (countAss > maxAss[n])
+				violations[4]++; // Sum the number of times the constraint 'Maximum number of assignments' is violated.
+		}
+        
+        public void evaluateSolution()
+		{
+			for (int i= 0; i<20;i++)
+			violations[i]=0;
+			
+			loadScheduled();
+			
+			textConstraints=("The total preference score is " + violations[0]);
+			textConstraints+=("\n\nThe constraint 'maximum number of consecutive working days' is violated " +violations[1]+" times.");
+			textConstraints+=("\nThe constraint 'maximum number of consecutive working days per shift type' is violated " + violations[2] +" times.");
+			textConstraints+=("\nThe constraint 'minimum number of assignments' is violated "+ violations[3] +" times." );
+			textConstraints+=("\nThe constraint 'maximum number of assignments' is violated " + violations[4] + " times.");
+		
+			textConstraints+=("\n\nThe staffing requirements are violated as follows:\n");
+			for (int d = 0;d<DAYS;d++)
+			{
+				for (int s =1; s<numberOfShifts;s++ )
+				{
+					for(int t=0; t<TYPES;t++)
+					{
+						a=scheduled[t][d][s];
+						
+						if(a<db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]))
+							{textConstraints+=("There are too few nurses of type "+ (t+1) + " in shift " + s + " on day " + (d+1)
+									+ " : " + a + " < " + db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]) + ".\n");
+							kappa++;
+							}
+						else if (a>db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]))
+							textConstraints+=("There are too many nurses of type "+ (t+1) +" in shift " + s + " on day " + (d+1)
+									+ " : " + a + " > " + db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]) + ".\n");
+					}
+				}
+			}
+			/*JTextArea textArea = new JTextArea(textConstraints);
+			JScrollPane scrollPane = new JScrollPane(textArea);  
+			textArea.setLineWrap(true);  
+			textArea.setWrapStyleWord(true); 
+			scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+			JOptionPane.showMessageDialog(null, scrollPane, "VIOLATIONS",  
+					JOptionPane.WARNING_MESSAGE);*/
+		}
+        
+        
+        
+        public void costs()
+	{
+            reader r = new reader();
+            r.readWages();
+       
+		costType1=0;
+		costType2=0;
+		costTotal=0;
+		
+		for (int n=0; n<numberOfNursesType1;n++){
+			for(int d=0; d<DAYS;d++){
+				if (d==5||d==6||d==12||d==13||d==19||d==20||d==26||d==27){//weekend ==> 1
+					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
+						costType1+=r.getWageType1Early9Weekend();
+						////System.out.println("Weekend COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 0));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
+						costType1+=r.getWageType1Day9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 1));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
+						costType1+=r.getWageType1Late9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 2));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
+						costType1+=r.getWageType1Night9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 3));
+					}
+				}
+				else{
+					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
+						costType1+=r.getWageType1Early9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 0));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
+						costType1+=r.getWageType1Day9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 1));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
+						costType1+=r.getWageType1Late9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 2));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
+						costType1+=r.getWageType1Night9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 3));
+					}
+				}
+			}
+		}
+		for (int n=numberOfNursesType1; n<numberOfNurses;n++){
+			for(int d=0; d<DAYS;d++){
+				if (d==5||d==6||d==12||d==13||d==19||d==20||d==26||d==27){//weekend ==> 1
+					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
+						costType2+=r.getWageType2Early9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 0));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
+						costType2+=r.getWageType2Day9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 1) );
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
+						costType2+=r.getWageType2Late9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 2));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
+						costType2+=r.getWageType2Night9Weekend();
+						////System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 3));
+					}
+				}
+				else{
+					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
+						costType2+=r.getWageType2Early9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 0));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
+						costType2+=r.getWageType2Day9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 1));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
+						costType2+=r.getWageType2Late9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 2));
+					}
+					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
+						costType2+=r.getWageType2Night9Week();
+						////System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 3));
+					}
+				}
+			}
+		}
+		costTotal=Math.round((costType1+costType2)*100)/100;
+		costType1=Math.round(costType1*100)/100;
+		costType2=Math.round(costType2*100)/100;
+	}
+        
+        public int getNurseScheduleFinal(int n, int d){
+		return shiftDecoding(nurseScheduleFinal[n][d]);
 	}
 
     
