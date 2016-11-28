@@ -56,6 +56,42 @@ public class reader {
     private int [][] cyclicRostersType2 = new int [50][50];
     private int [] reqFTERosterType1;
     private int [] reqFTERosterType2;
+    
+    private double wageType1Early9Week;
+    private double wageType1Early9Weekend;
+    private double wageType1Day9Week;
+    private double wageType1Day9Weekend;
+    private double wageType1Late9Week;
+    private double wageType1Late9Weekend;
+    private double wageType1Night9Week;
+    private double wageType1Night9Weekend;
+    private double wageType1Early12Week;
+    private double wageType1Early12Weekend;
+    private double wageType1Day12Week;
+    private double wageType1Day12Weekend;
+    private double wageType1Late12Week;
+    private double wageType1Late12Weekend;
+    private double wageType1Night12Week;
+    private double wageType1Night12Weekend;
+    private double wageType2Early9Week;
+    private double wageType2Early9Weekend;
+    private double wageType2Day9Week;
+    private double wageType2Day9Weekend;
+    private double wageType2Late9Week;
+    private double wageType2Late9Weekend;
+    private double wageType2Night9Week;
+    private double wageType2Night9Weekend;
+    private double wageType2Early12Week;
+    private double wageType2Early12Weekend;
+    private double wageType2Day12Week;
+    private double wageType2Day12Weekend;
+    private double wageType2Late12Week;
+    private double wageType2Late12Weekend;
+    private double wageType2Night12Week;
+    private double wageType2Night12Weekend;
+    
+    private int preference;
+    
        
     public reader(){
         
@@ -279,6 +315,97 @@ public class reader {
         }
         
     }
+    
+    public void readWages(){
+        CSVReader reader;
+        
+        try{
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            String[][] lines= new String[1000][1000];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+        
+            setWageType1Early9Week(Double.parseDouble(lines[1][2]));
+            setWageType1Early9Weekend(Double.parseDouble(lines[1][3]));
+            setWageType1Day9Week(Double.parseDouble(lines[2][2]));
+            setWageType1Day9Weekend(Double.parseDouble(lines[2][3]));
+            setWageType1Late9Week(Double.parseDouble(lines[3][2]));
+            setWageType1Late9Weekend(Double.parseDouble(lines[3][3]));
+            setWageType1Night9Week(Double.parseDouble(lines[4][2]));
+            setWageType1Night9Weekend(Double.parseDouble(lines[4][3]));
+            setWageType1Early12Week(Double.parseDouble(lines[5][2]));
+            setWageType1Early12Weekend(Double.parseDouble(lines[5][3]));
+            setWageType1Day12Week(Double.parseDouble(lines[6][2]));
+            setWageType1Day12Weekend(Double.parseDouble(lines[6][3]));
+            setWageType1Late12Week(Double.parseDouble(lines[7][2]));
+            setWageType1Late12Weekend(Double.parseDouble(lines[7][3]));
+            setWageType1Night12Week(Double.parseDouble(lines[8][2]));
+            setWageType1Night12Weekend(Double.parseDouble(lines[8][3]));
+            setWageType2Early9Week(Double.parseDouble(lines[9][2]));
+            setWageType2Early9Weekend(Double.parseDouble(lines[9][3]));
+            setWageType2Day9Week(Double.parseDouble(lines[10][2]));
+            setWageType2Day9Weekend(Double.parseDouble(lines[10][3]));
+            setWageType2Late9Week(Double.parseDouble(lines[11][2]));
+            setWageType2Late9Weekend(Double.parseDouble(lines[11][3]));
+            setWageType2Night9Week(Double.parseDouble(lines[12][2]));
+            setWageType2Night9Weekend(Double.parseDouble(lines[12][3]));
+            setWageType2Early12Week(Double.parseDouble(lines[13][2]));
+            setWageType2Early12Weekend(Double.parseDouble(lines[13][3]));
+            setWageType2Day12Week(Double.parseDouble(lines[14][2]));
+            setWageType2Day12Weekend(Double.parseDouble(lines[14][3]));
+            setWageType2Late12Week(Double.parseDouble(lines[15][2]));
+            setWageType2Late12Weekend(Double.parseDouble(lines[15][3]));
+            setWageType2Night12Week(Double.parseDouble(lines[16][2]));
+            setWageType2Night12Weekend(Double.parseDouble(lines[16][3]));
+        
+        }
+        catch (IOException e) {
+			e.printStackTrace();
+        }
+    }
+    
+    public int readPreference(int n, int d, int s){
+        CSVReader reader;
+        
+        try{
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            String[][] lines= new String[1000][1000];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+        
+            setPreference(Integer.parseInt(lines[n+1][(1+(5*(d-1)))+(s-1)]));
+            return preference;
+        }
+        
+        catch (IOException e) {
+			e.printStackTrace();
+        }
+        return -1;
+    }
+    
+    
+    
+    
     /**
      * @return the length
      */
@@ -744,6 +871,468 @@ public class reader {
      */
     public void setReqFTERosterType2(int[] reqFTERosterType2) {
         this.reqFTERosterType2 = reqFTERosterType2;
+    }
+
+    /**
+     * @return the wageType1Early9Week
+     */
+    public double getWageType1Early9Week() {
+        return wageType1Early9Week;
+    }
+
+    /**
+     * @param wageType1Early9Week the wageType1Early9Week to set
+     */
+    public void setWageType1Early9Week(double wageType1Early9Week) {
+        this.wageType1Early9Week = wageType1Early9Week;
+    }
+
+    /**
+     * @return the wageType1Early9Weekend
+     */
+    public double getWageType1Early9Weekend() {
+        return wageType1Early9Weekend;
+    }
+
+    /**
+     * @param wageType1Early9Weekend the wageType1Early9Weekend to set
+     */
+    public void setWageType1Early9Weekend(double wageType1Early9Weekend) {
+        this.wageType1Early9Weekend = wageType1Early9Weekend;
+    }
+
+    /**
+     * @return the wageType1Day9Week
+     */
+    public double getWageType1Day9Week() {
+        return wageType1Day9Week;
+    }
+
+    /**
+     * @param wageType1Day9Week the wageType1Day9Week to set
+     */
+    public void setWageType1Day9Week(double wageType1Day9Week) {
+        this.wageType1Day9Week = wageType1Day9Week;
+    }
+
+    /**
+     * @return the wageType1Day9Weekend
+     */
+    public double getWageType1Day9Weekend() {
+        return wageType1Day9Weekend;
+    }
+
+    /**
+     * @param wageType1Day9Weekend the wageType1Day9Weekend to set
+     */
+    public void setWageType1Day9Weekend(double wageType1Day9Weekend) {
+        this.wageType1Day9Weekend = wageType1Day9Weekend;
+    }
+
+    /**
+     * @return the wageType1Late9Week
+     */
+    public double getWageType1Late9Week() {
+        return wageType1Late9Week;
+    }
+
+    /**
+     * @param wageType1Late9Week the wageType1Late9Week to set
+     */
+    public void setWageType1Late9Week(double wageType1Late9Week) {
+        this.wageType1Late9Week = wageType1Late9Week;
+    }
+
+    /**
+     * @return the wageType1Late9Weekend
+     */
+    public double getWageType1Late9Weekend() {
+        return wageType1Late9Weekend;
+    }
+
+    /**
+     * @param wageType1Late9Weekend the wageType1Late9Weekend to set
+     */
+    public void setWageType1Late9Weekend(double wageType1Late9Weekend) {
+        this.wageType1Late9Weekend = wageType1Late9Weekend;
+    }
+
+    /**
+     * @return the wageType1Night9Week
+     */
+    public double getWageType1Night9Week() {
+        return wageType1Night9Week;
+    }
+
+    /**
+     * @param wageType1Night9Week the wageType1Night9Week to set
+     */
+    public void setWageType1Night9Week(double wageType1Night9Week) {
+        this.wageType1Night9Week = wageType1Night9Week;
+    }
+
+    /**
+     * @return the wageType1NightWeekend
+     */
+    public double getWageType1Night9Weekend() {
+        return wageType1Night9Weekend;
+    }
+
+    /**
+     * @param wageType1NightWeekend the wageType1NightWeekend to set
+     */
+    public void setWageType1Night9Weekend(double wageType1Night9Weekend) {
+        this.wageType1Night9Weekend = wageType1Night9Weekend;
+    }
+
+    /**
+     * @return the wageType1Early12Week
+     */
+    public double getWageType1Early12Week() {
+        return wageType1Early12Week;
+    }
+
+    /**
+     * @param wageType1Early12Week the wageType1Early12Week to set
+     */
+    public void setWageType1Early12Week(double wageType1Early12Week) {
+        this.wageType1Early12Week = wageType1Early12Week;
+    }
+
+    /**
+     * @return the wageType1Early12Weekend
+     */
+    public double getWageType1Early12Weekend() {
+        return wageType1Early12Weekend;
+    }
+
+    /**
+     * @param wageType1Early12Weekend the wageType1Early12Weekend to set
+     */
+    public void setWageType1Early12Weekend(double wageType1Early12Weekend) {
+        this.wageType1Early12Weekend = wageType1Early12Weekend;
+    }
+
+    /**
+     * @return the wageType1Day12Week
+     */
+    public double getWageType1Day12Week() {
+        return wageType1Day12Week;
+    }
+
+    /**
+     * @param wageType1Day12Week the wageType1Day12Week to set
+     */
+    public void setWageType1Day12Week(double wageType1Day12Week) {
+        this.wageType1Day12Week = wageType1Day12Week;
+    }
+
+    /**
+     * @return the wageType1Day12Weekend
+     */
+    public double getWageType1Day12Weekend() {
+        return wageType1Day12Weekend;
+    }
+
+    /**
+     * @param wageType1Day12Weekend the wageType1Day12Weekend to set
+     */
+    public void setWageType1Day12Weekend(double wageType1Day12Weekend) {
+        this.wageType1Day12Weekend = wageType1Day12Weekend;
+    }
+
+    /**
+     * @return the wageType1Late12Week
+     */
+    public double getWageType1Late12Week() {
+        return wageType1Late12Week;
+    }
+
+    /**
+     * @param wageType1Late12Week the wageType1Late12Week to set
+     */
+    public void setWageType1Late12Week(double wageType1Late12Week) {
+        this.wageType1Late12Week = wageType1Late12Week;
+    }
+
+    /**
+     * @return the wageType1Late12Weekend
+     */
+    public double getWageType1Late12Weekend() {
+        return wageType1Late12Weekend;
+    }
+
+    /**
+     * @param wageType1Late12Weekend the wageType1Late12Weekend to set
+     */
+    public void setWageType1Late12Weekend(double wageType1Late12Weekend) {
+        this.wageType1Late12Weekend = wageType1Late12Weekend;
+    }
+
+    /**
+     * @return the wageType1Night12Week
+     */
+    public double getWageType1Night12Week() {
+        return wageType1Night12Week;
+    }
+
+    /**
+     * @param wageType1Night12Week the wageType1Night12Week to set
+     */
+    public void setWageType1Night12Week(double wageType1Night12Week) {
+        this.wageType1Night12Week = wageType1Night12Week;
+    }
+
+    /**
+     * @return the wageType1Night12Weekend
+     */
+    public double getWageType1Night12Weekend() {
+        return wageType1Night12Weekend;
+    }
+
+    /**
+     * @param wageType1Night12Weekend the wageType1Night12Weekend to set
+     */
+    public void setWageType1Night12Weekend(double wageType1Night12Weekend) {
+        this.wageType1Night12Weekend = wageType1Night12Weekend;
+    }
+
+    /**
+     * @return the wageType2Early9Week
+     */
+    public double getWageType2Early9Week() {
+        return wageType2Early9Week;
+    }
+
+    /**
+     * @param wageType2Early9Week the wageType2Early9Week to set
+     */
+    public void setWageType2Early9Week(double wageType2Early9Week) {
+        this.wageType2Early9Week = wageType2Early9Week;
+    }
+
+    /**
+     * @return the wageType2Early9Weekend
+     */
+    public double getWageType2Early9Weekend() {
+        return wageType2Early9Weekend;
+    }
+
+    /**
+     * @param wageType2Early9Weekend the wageType2Early9Weekend to set
+     */
+    public void setWageType2Early9Weekend(double wageType2Early9Weekend) {
+        this.wageType2Early9Weekend = wageType2Early9Weekend;
+    }
+
+    /**
+     * @return the wageType2Day9Week
+     */
+    public double getWageType2Day9Week() {
+        return wageType2Day9Week;
+    }
+
+    /**
+     * @param wageType2Day9Week the wageType2Day9Week to set
+     */
+    public void setWageType2Day9Week(double wageType2Day9Week) {
+        this.wageType2Day9Week = wageType2Day9Week;
+    }
+
+    /**
+     * @return the wageType2Day9Weekend
+     */
+    public double getWageType2Day9Weekend() {
+        return wageType2Day9Weekend;
+    }
+
+    /**
+     * @param wageType2Day9Weekend the wageType2Day9Weekend to set
+     */
+    public void setWageType2Day9Weekend(double wageType2Day9Weekend) {
+        this.wageType2Day9Weekend = wageType2Day9Weekend;
+    }
+
+    /**
+     * @return the wageType2Late9Week
+     */
+    public double getWageType2Late9Week() {
+        return wageType2Late9Week;
+    }
+
+    /**
+     * @param wageType2Late9Week the wageType2Late9Week to set
+     */
+    public void setWageType2Late9Week(double wageType2Late9Week) {
+        this.wageType2Late9Week = wageType2Late9Week;
+    }
+
+    /**
+     * @return the wageType2Late9Weekend
+     */
+    public double getWageType2Late9Weekend() {
+        return wageType2Late9Weekend;
+    }
+
+    /**
+     * @param wageType2Late9Weekend the wageType2Late9Weekend to set
+     */
+    public void setWageType2Late9Weekend(double wageType2Late9Weekend) {
+        this.wageType2Late9Weekend = wageType2Late9Weekend;
+    }
+
+    /**
+     * @return the wageType2Night9Week
+     */
+    public double getWageType2Night9Week() {
+        return wageType2Night9Week;
+    }
+
+    /**
+     * @param wageType2Night9Week the wageType2Night9Week to set
+     */
+    public void setWageType2Night9Week(double wageType2Night9Week) {
+        this.wageType2Night9Week = wageType2Night9Week;
+    }
+
+    /**
+     * @return the wageType2NightWeekend
+     */
+    public double getWageType2Night9Weekend() {
+        return wageType2Night9Weekend;
+    }
+
+    /**
+     * @param wageType2NightWeekend the wageType2NightWeekend to set
+     */
+    public void setWageType2Night9Weekend(double wageType2Night9Weekend) {
+        this.wageType2Night9Weekend = wageType2Night9Weekend;
+    }
+
+    /**
+     * @return the wageType2Early12Week
+     */
+    public double getWageType2Early12Week() {
+        return wageType2Early12Week;
+    }
+
+    /**
+     * @param wageType2Early12Week the wageType2Early12Week to set
+     */
+    public void setWageType2Early12Week(double wageType2Early12Week) {
+        this.wageType2Early12Week = wageType2Early12Week;
+    }
+
+    /**
+     * @return the wageType2Early12Weekend
+     */
+    public double getWageType2Early12Weekend() {
+        return wageType2Early12Weekend;
+    }
+
+    /**
+     * @param wageType2Early12Weekend the wageType2Early12Weekend to set
+     */
+    public void setWageType2Early12Weekend(double wageType2Early12Weekend) {
+        this.wageType2Early12Weekend = wageType2Early12Weekend;
+    }
+
+    /**
+     * @return the wageType2Day12Week
+     */
+    public double getWageType2Day12Week() {
+        return wageType2Day12Week;
+    }
+
+    /**
+     * @param wageType2Day12Week the wageType2Day12Week to set
+     */
+    public void setWageType2Day12Week(double wageType2Day12Week) {
+        this.wageType2Day12Week = wageType2Day12Week;
+    }
+
+    /**
+     * @return the wageType2Day12Weekend
+     */
+    public double getWageType2Day12Weekend() {
+        return wageType2Day12Weekend;
+    }
+
+    /**
+     * @param wageType2Day12Weekend the wageType2Day12Weekend to set
+     */
+    public void setWageType2Day12Weekend(double wageType2Day12Weekend) {
+        this.wageType2Day12Weekend = wageType2Day12Weekend;
+    }
+
+    /**
+     * @return the wageType2Late12Week
+     */
+    public double getWageType2Late12Week() {
+        return wageType2Late12Week;
+    }
+
+    /**
+     * @param wageType2Late12Week the wageType2Late12Week to set
+     */
+    public void setWageType2Late12Week(double wageType2Late12Week) {
+        this.wageType2Late12Week = wageType2Late12Week;
+    }
+
+    /**
+     * @return the wageType2Late12Weekend
+     */
+    public double getWageType2Late12Weekend() {
+        return wageType2Late12Weekend;
+    }
+
+    /**
+     * @param wageType2Late12Weekend the wageType2Late12Weekend to set
+     */
+    public void setWageType2Late12Weekend(double wageType2Late12Weekend) {
+        this.wageType2Late12Weekend = wageType2Late12Weekend;
+    }
+
+    /**
+     * @return the wageType2Night12Week
+     */
+    public double getWageType2Night12Week() {
+        return wageType2Night12Week;
+    }
+
+    /**
+     * @param wageType2Night12Week the wageType2Night12Week to set
+     */
+    public void setWageType2Night12Week(double wageType2Night12Week) {
+        this.wageType2Night12Week = wageType2Night12Week;
+    }
+
+    /**
+     * @return the wageType2Night12Weekend
+     */
+    public double getWageType2Night12Weekend() {
+        return wageType2Night12Weekend;
+    }
+
+    /**
+     * @param wageType2Night12Weekend the wageType2Night12Weekend to set
+     */
+    public void setWageType2Night12Weekend(double wageType2Night12Weekend) {
+        this.wageType2Night12Weekend = wageType2Night12Weekend;
+    }
+
+    /**
+     * @return the preference
+     */
+    public int getPreference() {
+        return preference;
+    }
+
+    /**
+     * @param preference the preference to set
+     */
+    public void setPreference(int preference) {
+        this.preference = preference;
     }
      
     
