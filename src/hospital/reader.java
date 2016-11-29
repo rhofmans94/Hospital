@@ -285,18 +285,20 @@ public class reader {
            }
         
         readNurses(department);
-        numberOfRostersType1 = nurses1;
-        numberOfRostersType2 = nurses2;
-        
+        //numberOfRostersType1 = nurses1;
+        //numberOfRostersType2 = nurses2;
+        numberOfRostersType1 = 5;
+        numberOfRostersType2 = 10; // zelf bepaald voor test
+                
         for (int s=0;s<numberOfRostersType1;s++)
 		{
 			//reqFTERosterType1[s]= Integer.parseInt(lines[s+4]);
 			for (int d=0;d<DAYS;d++){
 			
-                                System.out.println(Integer.parseInt(lines[s+3][d]));
+                                //System.out.println(Integer.parseInt(lines[s+3][d]));
 				cyclicRostersType1[s][d]=Integer.parseInt(lines[s+3][d]); 
-				System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
-						+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+				//System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+				//		+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
 			}
 		}
         for (int s=numberOfRostersType1;s<numberOfRostersType1+numberOfRostersType2;s++)
@@ -305,8 +307,8 @@ public class reader {
 			for (int d=0;d<DAYS;d++)
 			{
 				cyclicRostersType1[s][d]=Integer.parseInt(lines[s+3][d]); 
-				System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
-						+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+				//System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+				//		+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
 			}
 		}
     }
@@ -320,8 +322,8 @@ public class reader {
         CSVReader reader;
         
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;
@@ -378,8 +380,8 @@ public class reader {
         CSVReader reader;
         
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"pref.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;

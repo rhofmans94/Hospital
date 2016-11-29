@@ -21,16 +21,18 @@ import javax.swing.JTextArea;
 
 public class Roster {
     
+        
         private final int NURSES = 100;
-        private final int SHIFTS = 6;           // Weten we nog niet
+        private final int SHIFTS = 5;           // Weten we nog niet
         private final int TYPES = 2;
 	private final int DAYS = 28; 
 	private final int ROSTERS = 100;        // Individueel rooster voor elke nurse
 	private final int MAXCONSDAYSOFWORK=5; 
         
+        
         private char department; // a,b,c,d
         
-        //private int kappa=0;   Wat is dit?
+        private int kappa=0;   //Wat is dit? Wordt gebruikt in evaluateSolution
 	
 	int k, l, m, p, q, hh, kk, h1, h2;
 	
@@ -42,7 +44,7 @@ public class Roster {
 	private int numberOfRostersType2;
         private int lengthOfShift;
 	
-	private int violations; 
+	//private int violations; 
 	
 	//readShiftSystem variables
 	private int[] startShift = new int[SHIFTS];
@@ -79,7 +81,7 @@ public class Roster {
 	ArrayList<Integer> type1NurseAssignedToType2RosterFinal;
 	ArrayList<Integer> assignedNursesFinal;
 	HashSet<Integer> sharedRosterFinal;
-	private int [][] nurseScheduleFinal=new int [numberOfNurses][DAYS];
+	private int [][] nurseScheduleFinal=new int [NURSES][DAYS]; //NumberOfNurses veranderd in Nurses
 	int [] nurseDoesFinal;
 	//private String PTHTDetails;
 	private int [] nursesR2Final;
@@ -88,7 +90,7 @@ public class Roster {
 	ArrayList<Integer> type1NurseAssignedToType2Roster;
 	ArrayList<Integer> assignedNurses;
 	HashSet<Integer> sharedRoster;
-	private int [][] nurseSchedule=new int [numberOfNurses][DAYS];
+	private int [][] nurseSchedule=new int [NURSES][DAYS]; //NumberOfNurses veranderd in Nurses
 	int [] nursePT1; 
 	int [] nursePT2;
 	int [] nurseDoes;
@@ -100,7 +102,7 @@ public class Roster {
 	ArrayList<Integer> assignedNursesBin= new ArrayList<Integer>();
 	ArrayList<Integer> type1NurseAssignedToType2RosterBin= new ArrayList<Integer>();
 	private int [] nurseDoesBin;
-	private int [][] nurseScheduleBin=new int [numberOfNurses][DAYS];
+	private int [][] nurseScheduleBin=new int [NURSES][DAYS]; //numberOfNurses veranderd in NURSES
 	private int [] nursesR2Bin;
 	private String PTHTDetailsBin;
 	
@@ -128,7 +130,7 @@ public class Roster {
 	private int countConsec; 					//?
 	private int [] countShift = new int[SHIFTS]; //number of shifts of particular type
 	private int [][][] scheduled = new int [TYPES][DAYS][SHIFTS];
-        //private int [] violations = new int[DAYS * SHIFTS];
+        private int [] violations = new int[DAYS * SHIFTS];
 	private String textConstraints; //will summarize the constraints
 	
 	//evaluateSolution variables
@@ -140,15 +142,6 @@ public class Roster {
 	private double costType2;
 	private double costTotal;
 	
-/*
-	cyclicRostersType1 = new int [numberOfRostersType1][DAYS];
-	cyclicRostersType2 = new int [numberOfRostersType1+numberOfRostersType2][DAYS];
-	reqFTERosterType1 = new int[numberOfRostersType1];
-	reqFTERosterType2 = new int [numberOfRostersType1+numberOfRostersType2];
-	nurseSchedule = new int [numberOfNurses][DAYS];
-	nurseScheduleBin = new int [numberOfNurses][DAYS];
-	nurseScheduleFinal = new int [numberOfNurses][DAYS];
-*/
 		
 	
         
@@ -169,10 +162,8 @@ public class Roster {
 			if (shift[s]==shiftCode)
 			userShiftID=s;
 		}
-		if (userShiftID ==10)
-    		JOptionPane.showMessageDialog(null,"You didn't pass a JAVA shiftID ","MISTAKE IN DECODING",JOptionPane.WARNING_MESSAGE);
-
-		////System.out.println("userShiftID: " + userShiftID + " and passed through JAVAs: " + shiftCode);
+		// userShiftID error?? (bij hun was da ne gui, heb dat weggedaan
+                System.out.println("userShiftID: " + userShiftID + " and passed through JAVAs: " + shiftCode);
 		return userShiftID;
 	}
 	
@@ -426,25 +417,25 @@ public void readCyclicRoster()
                     
 		for (int s=0;s<numberOfRostersType1;s++)
 		{
-			//reqFTERosterType1[s]= db.getReqFTERosterType(s, 1);
+			
 			for (int d=0;d<DAYS;d++)
 			{
                                 int [][] cyclR1 = r.getCyclicRostersType1();
 				cyclicRostersType1[s][d]=shift[cyclR1[s][d]]; 
-				System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (s+1) 
-						+ " is " + cyclicRostersType1[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+				//System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+				//		+ " is " + cyclicRostersType1[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
 			}
 		}
 		
 		for (int s=(numberOfRostersType1);s<(numberOfRostersType1+numberOfRostersType2);s++) 
 		{
-			//reqFTERosterType2[s]= db.getReqFTERosterType(s, 2);
+			
 			for (int d=0;d<DAYS;d++)
 			{
                                 int [][] cyclR2 = r.getCyclicRostersType2();
 				cyclicRostersType2[s][d]=shift[cyclR2[s][d]]; 
-				System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
-						+ " is " + cyclicRostersType2[s][d]+ " and there are " + "reqFTERosterType2[r]" + " FTE required.") ;
+				//System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+				//		+ " is " + cyclicRostersType2[s][d]+ " and there are " + "reqFTERosterType2[r]" + " FTE required.") ;
 			}
 		}
 		System.out.println("_________________________end readCyclicRoster_____________________");
@@ -479,28 +470,28 @@ public void iterate(){
 			while (count2!=5){//stond op 7 
 				//evaluateSolution();
 				horizontalSwapping();
-				////System.out.println("AFTER HORIZONTAM");
+				System.out.println("AFTER HORIZONTAM");
 				//evaluateSolution();
 				verticalSwapping();
-				////System.out.println("AFTER VERTICLA");
+				System.out.println("AFTER VERTICLA");
 				//evaluateSolution();
 				rearrangeSurplusRandom();
-				////System.out.println("AFTER REAARRANE");
+				System.out.println("AFTER REARRANGE");
 				//evaluateSolution();
 				avoidIslands();
-				////System.out.println("AFTER ISLANDS");
+				System.out.println("AFTER ISLANDS");
 				count2++;
 			}
 			violationss=0;
 			for (int n=0; n<numberOfNurses;n++){
  				for (int d=0;d<DAYS;d++){
- 					violations+= r.readPreference(n, d, shiftDecoding(nurseSchedule[n][d]));
+ 					violationss+= r.readPreference(n, d, shiftDecoding(nurseSchedule[n][d]));
  				}
  			}
  			System.out.println("Total Violations: " + violationss);
  			
  			evaluateSolution();
-	 		if (violations<minimum && violations[1]==0 && kappa!=0){
+	 		if (violationss<minimum && violations[1]==0 && kappa!=0){
 	 			minimum=violationss;
 	 			sharedRosterFinal=new HashSet<Integer>(sharedRoster);
 				assignedNursesFinal=new ArrayList<Integer>(assignedNurses);
@@ -515,15 +506,16 @@ public void iterate(){
 								}
 							}							
 					}
-					//System.out.println("!!!!!!!!!!!!!!!!!!!!MIN SO FAR "  + minimum + "!!!!!!!!!!!!!!!!!!!!!!\n");
+					System.out.println("!!!!!!!!!!!!!!!!!!!!MIN SO FAR "  + minimum + "!!!!!!!!!!!!!!!!!!!!!!\n");
 	 			}
 		count1++;
 		}
-		//System.out.println("xxxx xxxx xxxx finalSolution xxxx xxxx xxxx");
-		printOutputFinal();
-		evaluateSolutionFinal();
-		//excelResult(); 
-		//System.out.println("EXCEL ---> GA GAAN ZIEN IN UW WORKSPACE VOOR DE OUTPUT!!!");
+                        System.out.println("xxxx xxxx xxxx finalSolution xxxx xxxx xxxx");
+                //NOG METHODES!!!        
+		//printOutputFinal();
+		//evaluateSolutionFinal();
+                //excelResult(); 
+                        System.out.println("EXCEL ---> GA GAAN ZIEN IN UW WORKSPACE VOOR DE OUTPUT!!!");
 	}
 
 public void procedureBA()
@@ -582,6 +574,7 @@ public void procedureBA()
 			int low=0;//incl.
 			int high=numberOfNursesType1;//Excl.
 			n1=(new Random().nextInt(high-low)+low);
+                        System.out.println("n1: "+n1);
 			while(assignedNursesBin.contains(n1)){
 				n1=new Random().nextInt(high-low)+low;
 				System.out.println("New n1 " + n1);
@@ -590,6 +583,7 @@ public void procedureBA()
 			assignedNursesBin.add(n1);
 			nurseDoesBin[n1]=r;
 			for(int d=0; d<DAYS;d++){
+                            //System.out.println("cyclicRosterType1= " +cyclicRostersType1[r][d]);
 				nurseScheduleBin[n1][d]=cyclicRostersType1[r][d];
 			}
 			if(nurseEmploymentRate[n1]!=1.0){
@@ -611,6 +605,7 @@ public void procedureBA()
 				if (count!=9999){
 					PTHTDetailsBin+=("\nn2: " +  n2 + " has ER: " + nurseEmploymentRate[n2] *100+"%" );
 				assignedNursesBin.add(n2);
+                                System.out.println("assignedNurse 2: "+n2);
 				nurseDoesBin[n2]=r;
 				for(int d=0; d<DAYS;d++){
 					nurseScheduleBin[n2][d]=cyclicRostersType1[r][d];
@@ -647,6 +642,7 @@ public void procedureBA()
 		}
 		System.out.println("///////////////////////TYPE 2 ("+nursesR2Bin.length+")/////////////////////////////////////////");
 		for (int r=numberOfRostersType1;r<numberOfRostersType1+numberOfRostersType2;r++){
+                    System.out.println("reqFTERosterType2: "+reqFTERosterType2[r]);
 			for(int f =0; f<reqFTERosterType2[r]; f++){
 				System.out.println("ROSTER " + (r+1));
 				int low=0;//incl.
@@ -746,7 +742,7 @@ public void procedureBA()
 					if (nurseDoesBin[n]==r && (nurseEmploymentRate[n]==0.75 || nurseEmploymentRate[n]==0.50)){
 						PTHTnurses[mh]=n;
 						mh++;
-						////System.out.println("dubbel roster " + (r+1) + " wordt gevolgd door nurse " + db.getArrayNurse(n).getNurseID());
+						System.out.println("dubbel roster " + (r+1) + " wordt gevolgd door nurse " + db.getArrayNurse(n).getNurseID());
 					}
 				}
 				mini=99999999;
@@ -771,9 +767,9 @@ public void procedureBA()
 				}
 			}
 		int violations=0;
-		for (int n=0; n<numberOfNurses;n++){////System.out.println("nurse " + db.getArrayNurse(n).getNurseID() + ", Roster " + (nurseDoesBin[n]+1)) ;
+		for (int n=0; n<numberOfNurses;n++){System.out.println("nurse " + nurseID[n] + ", Roster " + (nurseDoesBin[n]+1)) ; //komt er zo iets in nurseID? Dit was met een database
 			for (int d=0;d<DAYS;d++){
-				////System.out.println("Day " +(d+1)+ " Usershift " + shiftDecoding(nurseScheduleBin[n][d]) +  " penalty: " + db.getNursePreferencesTotal(n, d, shiftDecoding(nurseScheduleBin[n][d])) );
+				System.out.println("Day " +(d+1)+ " Usershift " + shiftDecoding(nurseScheduleBin[n][d]) +  " penalty: " + re.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d])) );
 				violations+= re.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d]));
 			}
 		}
