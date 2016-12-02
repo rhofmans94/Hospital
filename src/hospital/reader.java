@@ -376,7 +376,8 @@ public class reader {
         }
     }
     
-    public int readPreference(int n, int d, int s){
+    public int readPreference(int n, int d, int s, char department){
+        this.department = department;
         CSVReader reader;
         
         try{
