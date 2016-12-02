@@ -92,6 +92,7 @@ public class reader {
     
     private int preference;
     
+    private double [][] wageCost = new double [50][50];
        
     public reader(){
         
@@ -322,8 +323,8 @@ public class reader {
         CSVReader reader;
         
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;
@@ -370,6 +371,35 @@ public class reader {
             setWageType2Night12Week(Double.parseDouble(lines[16][2]));
             setWageType2Night12Weekend(Double.parseDouble(lines[16][3]));
         
+        }
+        catch (IOException e) {
+			e.printStackTrace();
+        }
+    }
+    
+    public void readWages2(int r, int k){
+        CSVReader reader;
+        
+        try{
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
+            String[][] lines= new String[1000][1000];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+        for (int i = 0; i < 16; i++){
+            for (int j = 0; j < 3; j++){
+                wageCost[i][j] = Double.parseDouble(lines[r][k]);
+            }
+        }
         }
         catch (IOException e) {
 			e.printStackTrace();
