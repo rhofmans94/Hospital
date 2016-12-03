@@ -11,6 +11,9 @@ import java.io.IOException;
  * @author Ruth Hofmans
  */
 public class reader {
+    
+    //Lijn 291+292 manueel ingevuld voor test AANPASSEN!!!!
+    
     private char department;
     
     private final int DAYS = 28; 
@@ -425,8 +428,21 @@ public class reader {
              lineNumber ++; 
             
            }
-        
-            setPreference(Integer.parseInt(lines[n+1][(1+(5*(d-1)))+(s-1)]));
+            int line;
+            int column;
+                    
+            if (s==0) // als free shift, dan moeten we kijken naar de laatste column en niet de eerste
+            {
+            line = n+6;
+            column = (1+(5*(d)))+(s+4);
+            }
+            else
+            {
+             line = n+6;
+             column = (1+(5*(d)))+(s-1);
+            }
+            setPreference(Integer.parseInt(lines[line][column]));
+            System.out.println(getPreference());
             return preference;
         }
         
