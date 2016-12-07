@@ -8,6 +8,8 @@ package hospital;
 import com.opencsv.CSVWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,34 +26,48 @@ public class Writer {
                 
         CSVWriter writer;
         try{
-            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\test.csv"));
-            writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\test.csv"));
-            String[][] lines= new String[100][100];
-            int lineNumber = 3;
+            //writer = new CSVWriter(new FileWriter("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\test.csv"));
+            writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\test"+department+".csv"));
+            String[][][] lines= new String[100][100][100];
+            //int lineNumber = 3;
             
             for (int n=0; n<5;n++)
             {
-                lines[n+3][0] = "ID"+n;
+                lines[n][0][0] = "ID"+n;
                 for (int d=0; d<5;d++)
                 {
-                    lines[3+n][d+1]=Integer.toString(d+1);
+                    for(int s=0;s<5;s++)
+                    {
+                    int dag = d+1;
+                    lines[n][dag][s]=Integer.toString(s); //ophalen shift van die nurse!
+                    }
+                  
                 }
+               
             }
             
-            System.out.println(lines[4][0]+ " "+lines[4][1]);
-                
-       while (lineNumber < 8) {
+        //System.out.println(lines[0][0]+ " "+lines[0][1]+" "+lines[0][2]);
+        //System.out.println(lines[1][0]+ " "+lines[1][1]+" "+lines[1][2]);
+        //System.out.println(lines[2][0]+ " "+lines[2][1]+" "+lines[2][2]);
             
-            String[] write = lines[lineNumber];
-            String[] entries = "a,b,c".split(",");
-            System.out.println(write[0]);
-            writer.writeNext(entries);
-            
-             lineNumber ++; 
-            
-           }     
-        
-            
+         
+         List<String[]> data = new ArrayList<String[]>();
+         for (int n=0;n<5;n++)
+         {
+          String total = new String();   
+             for (int d=0;d<=5;d++)
+             {
+                 for (int s=0;s<5;s++)
+                 {
+                 total += lines[n][d][s]+";";
+                 }
+                 
+             }
+         data.add(new String[]{total});
+         
+         }
+         writer.writeAll(data);
+         writer.close();
             
                
      }
