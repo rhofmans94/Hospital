@@ -401,6 +401,7 @@ public class reader {
         for (int i = 0; i < 16; i++){
             for (int j = 0; j < 3; j++){
                 wageCost[i][j] = Double.parseDouble(lines[r][k]);
+                for()
             }
         }
         }
