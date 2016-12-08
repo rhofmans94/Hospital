@@ -17,7 +17,7 @@ public class reader {
     private char department;
     
     private final int DAYS = 28; 
-    private final int SHIFTS = 4;           // aan te passen
+    private final int SHIFTS = 5;           // aan te passen
     private int[] shift = new int[SHIFTS];
     
     private int length;
@@ -26,10 +26,10 @@ public class reader {
     private int [] startShiftB;
     private int [] startShiftC;
     private int [] startShiftD;
-    private int [] reqA;
-    private int [] reqB;
-    private int [] reqC;
-    private int [] reqD;
+    private int [] reqA = new int [SHIFTS];
+    private int [] reqB = new int [SHIFTS];;
+    private int [] reqC = new int [SHIFTS];;
+    private int [] reqD = new int [SHIFTS];;
     private int budgetA;
     private int budgetB;
     private int budgetC;
@@ -135,15 +135,15 @@ public class reader {
             setStartShiftC(new int [] {0,Integer.parseInt(lines[4][2]), Integer.parseInt(lines[5][2]),Integer.parseInt(lines[6][2])});
             setStartShiftD(new int [] {0,Integer.parseInt(lines[4][3]), Integer.parseInt(lines[5][3]),Integer.parseInt(lines[6][3])});
             
-            setReqA(new int [] {0,Integer.parseInt(lines[9][0]), Integer.parseInt(lines[10][0]),Integer.parseInt(lines[11][0])});
-            setReqB(new int [] {0,Integer.parseInt(lines[9][1]), Integer.parseInt(lines[10][1]),Integer.parseInt(lines[11][1])});
-            setReqC(new int [] {0,Integer.parseInt(lines[9][2]), Integer.parseInt(lines[10][2]),Integer.parseInt(lines[11][2])});
-            setReqD(new int [] {0,Integer.parseInt(lines[9][3]), Integer.parseInt(lines[10][3]),Integer.parseInt(lines[11][3])});
+            setReqA(new int [] {0,Integer.parseInt(lines[11][0]), Integer.parseInt(lines[12][0]),Integer.parseInt(lines[13][0])});
+            setReqB(new int [] {0,Integer.parseInt(lines[11][1]), Integer.parseInt(lines[12][1]),Integer.parseInt(lines[13][1])});
+            setReqC(new int [] {0,Integer.parseInt(lines[11][2]), Integer.parseInt(lines[12][2]),Integer.parseInt(lines[13][2])});
+            setReqD(new int [] {0,Integer.parseInt(lines[11][3]), Integer.parseInt(lines[12][3]),Integer.parseInt(lines[13][3])});
             
-            budgetA = Integer.parseInt(lines[14][0]);
-            budgetB = Integer.parseInt(lines[14][1]);
-            budgetC = Integer.parseInt(lines[14][2]);
-            budgetD = Integer.parseInt(lines[14][3]);
+            budgetA = Integer.parseInt(lines[18][0]);
+            budgetB = Integer.parseInt(lines[18][1]);
+            budgetC = Integer.parseInt(lines[18][2]);
+            budgetD = Integer.parseInt(lines[18][3]);
             
             //System.out.println(start[0] + "" + start[1] +""+start[2]);
             
@@ -278,7 +278,7 @@ public class reader {
         
         try{
             //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\D-input.csv"));
-            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\D input.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"roster.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;
@@ -453,7 +453,7 @@ public class reader {
              column = (1+(5*(d)))+(s-1);
             }
             setPreference(Integer.parseInt(lines[line][column]));
-            System.out.println(getPreference());
+            System.out.println("pref: "+getPreference());
             return preference;
         }
         
@@ -485,10 +485,12 @@ public class reader {
             int column;
             
             column = t;
-            line = s+2;
+            line = s+3;
+            //System.out.println(column+" "+line);
+            //System.out.println(lines[line][column]);
             
             setReqShiftType(Integer.parseInt(lines[line][column]));
-            System.out.println(getReqShiftType());
+            //System.out.println(getReqShiftType());
             return reqShiftType;
         }
         

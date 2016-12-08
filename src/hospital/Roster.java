@@ -1,6 +1,7 @@
 
 package hospital;
 
+import com.opencsv.CSVWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class Roster {
     
         
         private final int NURSES = 100;
-        private final int SHIFTS = 4;           // Weten we nog niet
+        private final int SHIFTS = 5;           // Weten we nog niet
         private final int TYPES = 2;
 	private final int DAYS = 28; 
 	private final int ROSTERS = 100;        // Individueel rooster voor elke nurse
@@ -293,7 +294,8 @@ public class Roster {
 	//System.out.println("free day: usershift: is now java shift: " + shift[0]);
 	// According to the input data, the day off (code 0) is associated with shift (numberOfShifts-1) (the free shift). 
 
-	for (int s = 1; s <= numberOfShifts; s++)	// Determine the length of the shifts
+	hrs[shift[0]] = 0; // The free shift contains no duty time
+        for (int s = 1; s <= numberOfShifts; s++)	// Determine the length of the shifts
 	{	if (startShift[s] + lengthOfShift < 24)
 			{
 			hrs[shift[s]] = lengthOfShift;
@@ -308,7 +310,7 @@ public class Roster {
 			}
 	}
 
-	hrs[shift[0]] = 0; // The free shift contains no duty time
+	
 
 	for (d = 0; d <DAYS; d++)	// Copy staffing requirements to the other days								// Copy staffing requirements to the other days
 	{	for (int s = 1; s <= numberOfShifts; s++)							
@@ -1613,25 +1615,49 @@ public void procedureBA()
 			}
 		}
 		System.out.println("SCHEDULE: \n" + textMonthlyRoster);
-			JLabel penaltyLabel=new JLabel("TOTAL PREFERENCE SCORE " + totalPenalty +"\nTOTAL COST " + costTotal + "(Type1: " + costType1 + ", Type2: " + costType2 +")");
-			penaltyLabel.setForeground(Color.ORANGE);
-			JTextArea textArea = new JTextArea(textMonthlyRoster);
-			JTextArea textArea2 = new JTextArea(txt);
-			JScrollPane scrollPane = new JScrollPane(textArea);  
-			JScrollPane scrollPane2 = new JScrollPane(textArea2); 
-			textArea.setLineWrap(true);  
-			textArea.setWrapStyleWord(true); 
-			textArea2.setLineWrap(true);  
-			textArea2.setWrapStyleWord(true);
-			JPanel myPanel=new JPanel();
-			myPanel.setLayout(new BorderLayout(10,10));
-			scrollPane.setPreferredSize(new Dimension (690, 400) );
-			scrollPane2.setPreferredSize( new Dimension(180, 400) );
-			myPanel.add(scrollPane, "West");
-			myPanel.add(scrollPane2, "East");
-			myPanel.add(penaltyLabel, "South");
-			JOptionPane.showMessageDialog(null, myPanel, "Summary", JOptionPane.INFORMATION_MESSAGE);
-		
+			
+		CSVWriter writer;
+        try{
+            //writer = new CSVWriter(new FileWriter("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\test.csv"));
+            writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\test"+department+".csv"));
+            String[][] lines= new String[100][100];
+            //int lineNumber = 3;
+            
+            for (int n=0; n<numberOfNurses;n++)
+            {
+                lines[n][0] = nurseID[n];
+                for (int d=0; d<DAYS;d++)
+                {
+                    int shift = nurseSchedule[n][d];
+                    int dag = d+1;
+                    lines[n][dag]=Integer.toString(shiftDecoding(shift)); //ophalen shift van die nurse!
+                    }
+                  
+                }
+               
+  
+         
+         java.util.List<String[]> data = new ArrayList<String[]>();
+         for (int n=0;n<numberOfNurses;n++)
+         {
+          String total = new String();   
+             for (int d=0;d<=DAYS;d++)
+             {
+                 total += lines[n][d]+";";
+             }
+            data.add(new String[]{total});
+         
+         }
+         writer.writeAll(data);
+         writer.close();
+            
+               
+     }
+         catch (IOException e) {
+			e.printStackTrace();
+        }
+
+                
 		}
         
         public void loadScheduled()
@@ -1687,8 +1713,8 @@ public void procedureBA()
 				
 				int shiftCurrentDay = nurseSchedule[n][d];
 				int shiftPreviousDay = nurseSchedule[n][d-1];
-				System.out.println("SUPPORT: nurse " + nurseID[n] + " shift day " + (d+1) + " = " +cyclicRostersType1[n][d] 
-						+" day before " + d + " =  " +cyclicRostersType1[n][d-1] );
+				//System.out.println("SUPPORT: nurse " + nurseID[n] + " shift day " + (d+1) + " = " +cyclicRostersType1[n][d] 
+				//		+" day before " + d + " =  " +cyclicRostersType1[n][d-1] );
 				
 				if (type1NurseAssignedToType2Roster.contains(n))
 					scheduled[nurseType[n]][d][shiftDecoding(shiftCurrentDay)]++;
