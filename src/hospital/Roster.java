@@ -23,7 +23,7 @@ public class Roster {
     
         
         private final int NURSES = 100;
-        private final int SHIFTS = 5;           // Weten we nog niet
+        private final int SHIFTS = 4;           // Weten we nog niet
         private final int TYPES = 2;
 	private final int DAYS = 28; 
 	private final int ROSTERS = 100;        // Individueel rooster voor elke nurse
@@ -977,18 +977,19 @@ public void procedureBA()
 			else return false;
 	}
 	public boolean enoughReqNurses(int nurse,int day,int type,int sh)
-	{	
+	{
+            reader r = new reader();
 		// doorgegeven type (nurseType[]) is 1 of 2!!
 		if (type1NurseAssignedToType2Roster.contains(nurse)){
-			if (scheduled[type][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh])){
-				System.out.println("1TO2 Day "+ (day+1) + " S" + sh + ",=> "+scheduled[type][day][sh]+"/"+db.getReqNumberOfNursesPerShiftAndTypeList(type,sh));
+			if (scheduled[type][day][sh]>r.readRequirements(type,shift[sh],department)){
+				System.out.println("1TO2 Day "+ (day+1) + " S" + sh + ",=> "+scheduled[type][day][sh]+"/"+r.readRequirements(type,sh,department));
 				return true;
 				}
 			else return false;
 			}
 		else{
-			if (scheduled[type-1][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh])){
-				System.out.println("Day "+ (day+1) + " S" + sh + ",  => "+scheduled[type-1][day][sh]+"/"+db.getReqNumberOfNursesPerShiftAndTypeList(type-1,sh));
+			if (scheduled[type-1][day][sh]>r.readRequirements(type-1,shift[sh],department)){
+				System.out.println("Day "+ (day+1) + " S" + sh + ",  => "+scheduled[type-1][day][sh]+"/"+r.readRequirements(type-1,sh,department));
 				return true;
 				}
 			else return false;
@@ -1341,18 +1342,19 @@ public void procedureBA()
 		System.out.println("____END avoidIslands____"); 
 	}//close avoidIslands
 	public int howMuchSurplus(int nurse,int day,int type,int sh)
-	{	
+	{
+            reader r = new reader();
 		// doorgegeven type (nurseType[]) is 1 of 2!!
 		if (type1NurseAssignedToType2Roster.contains(nurse)){
-			if (scheduled[type][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh])){
-				return (scheduled[type][day][sh]-db.getReqNumberOfNursesPerShiftAndTypeList(type,shift[sh]));
+			if (scheduled[type][day][sh]>r.readRequirements(type,shift[sh],department)){
+				return (scheduled[type][day][sh]-r.readRequirements(type,shift[sh],department));
 				}
 			else return 0;
 			}
 		else{
 			
-			if (scheduled[type-1][day][sh]>db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh])){
-				return (scheduled[type-1][day][sh]-db.getReqNumberOfNursesPerShiftAndTypeList(type-1,shift[sh]));
+			if (scheduled[type-1][day][sh]>r.readRequirements(type-1,shift[sh],department)){
+				return (scheduled[type-1][day][sh]-r.readRequirements(type-1,shift[sh],department));
 				}
 			else return 0;
 			}
@@ -1685,8 +1687,8 @@ public void procedureBA()
 				
 				int shiftCurrentDay = nurseSchedule[n][d];
 				int shiftPreviousDay = nurseSchedule[n][d-1];
-				System.out.println("SUPPORT: nurse " + nurseID[n] + " shift day " + (d+1) + " = " +cyclicRostersType1[getRosterForNurseType1[n]][d] 
-						+" day before " + d + " =  " +cyclicRostersType1[getRosterForNurseType1[n]][d-1] );
+				System.out.println("SUPPORT: nurse " + nurseID[n] + " shift day " + (d+1) + " = " +cyclicRostersType1[n][d] 
+						+" day before " + d + " =  " +cyclicRostersType1[n][d-1] );
 				
 				if (type1NurseAssignedToType2Roster.contains(n))
 					scheduled[nurseType[n]][d][shiftDecoding(shiftCurrentDay)]++;
@@ -1737,7 +1739,8 @@ public void procedureBA()
         
         public void evaluateSolution()
 		{
-			for (int i= 0; i<20;i++)
+                    reader r = new reader();
+                        for (int i= 0; i<20;i++)
 			violations[i]=0;
 			
 			loadScheduled();
@@ -1757,14 +1760,14 @@ public void procedureBA()
 					{
 						a=scheduled[t][d][s];
 						
-						if(a<db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]))
+						if(a<r.readRequirements(t, shift[s],department))
 							{textConstraints+=("There are too few nurses of type "+ (t+1) + " in shift " + s + " on day " + (d+1)
-									+ " : " + a + " < " + db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]) + ".\n");
+									+ " : " + a + " < " + r.readRequirements(t, shift[s],department) + ".\n");
 							kappa++;
 							}
-						else if (a>db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]))
+						else if (a>r.readRequirements(t, shift[s],department))
 							textConstraints+=("There are too many nurses of type "+ (t+1) +" in shift " + s + " on day " + (d+1)
-									+ " : " + a + " > " + db.getReqNumberOfNursesPerShiftAndTypeList(t, shift[s]) + ".\n");
+									+ " : " + a + " > " + r.readRequirements(t, shift[s],department) + ".\n");
 					}
 				}
 			}
