@@ -295,8 +295,8 @@ public class reader {
         readNurses(department);
         //numberOfRostersType1 = nurses1;
         //numberOfRostersType2 = nurses2;
-        numberOfRostersType1 = 5;
-        numberOfRostersType2 = 10; // zelf bepaald voor test
+        numberOfRostersType1 = 7;
+        numberOfRostersType2 = 23; // zelf bepaald voor test
                 
         for (int s=0;s<numberOfRostersType1;s++)
 		{
