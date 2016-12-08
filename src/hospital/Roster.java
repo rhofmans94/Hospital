@@ -1782,7 +1782,7 @@ public void procedureBA()
         public void costs()
 	{
             reader r = new reader();
-            r.readWages();
+            //r.readWages();
        
 		costType1=0;
 		costType2=0;
@@ -1792,38 +1792,38 @@ public void procedureBA()
 			for(int d=0; d<DAYS;d++){
 				if (d==5||d==6||d==12||d==13||d==19||d==20||d==26||d==27){//weekend ==> 1
 					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
-						costType1+=r.getWageType1Early9Weekend();
-						System.out.println("Weekend COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 0));
+						costType1+=r.readWages2(1,3);
+						//System.out.println("Weekend COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 0));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
-						costType1+=r.getWageType1Day9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 1));
+						costType1+=r.readWages2(2,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 1));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
-						costType1+=r.getWageType1Late9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 2));
+						costType1+=r.readWages2(3,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 2));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
-						costType1+=r.getWageType1Night9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 3));
+						costType1+=r.readWages2(4,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 0, 3));
 					}
 				}
 				else{
 					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
-						costType1+=r.getWageType1Early9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 0));
+						costType1+=r.readWages2(1,2);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 0));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
-						costType1+=r.getWageType1Day9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 1));
+						costType1+=r.readWages2(2,2);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 1));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
-						costType1+=r.getWageType1Late9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 2));
+						costType1+=r.readWages2(3,2);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 2));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
-						costType1+=r.getWageType1Night9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 3));
+						costType1+=r.readWages2(4,2);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 0, 3));
 					}
 				}
 			}
@@ -1832,38 +1832,38 @@ public void procedureBA()
 			for(int d=0; d<DAYS;d++){
 				if (d==5||d==6||d==12||d==13||d==19||d==20||d==26||d==27){//weekend ==> 1
 					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
-						costType2+=r.getWageType2Early9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 0));
+						costType2+=r.readWages2(5,3);
+                                                //System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 0));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
-						costType2+=r.getWageType2Day9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 1) );
+						costType2+=r.readWages2(6,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 1) );
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
-						costType2+=r.getWageType2Late9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 2));
+						costType2+=r.readWages2(7,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 2));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
-						costType2+=r.getWageType2Night9Weekend();
-						System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 3));
+						costType2+=r.readWages2(8,3);
+						//System.out.println("WeekendCOST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(1, 1, 3));
 					}
 				}
 				else{
 					if(startShift[shiftDecoding(nurseSchedule[n][d])]==6){//early
-						costType2+=r.getWageType2Early9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 0));
+						costType2+=r.readWages2(5,3);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 0));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==9||startShift[shiftDecoding(nurseSchedule[n][d])]==12){//day
-						costType2+=r.getWageType2Day9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 1));
+						costType2+=r.readWages2(6,3);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 1));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==15||startShift[shiftDecoding(nurseSchedule[n][d])]==18){//late
-						costType2+=r.getWageType2Late9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 2));
+						costType2+=r.readWages2(7,3);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 2));
 					}
 					else if (startShift[shiftDecoding(nurseSchedule[n][d])]==21){//night
-						costType2+=r.getWageType2Night9Week();
-						System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 3));
+						costType2+=r.readWages2(8,3);
+						//System.out.println("COST nurse: " + (n+1) + " day " +(d+1) + " = " + db.getWage(0, 1, 3));
 					}
 				}
 			}

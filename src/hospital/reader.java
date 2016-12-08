@@ -96,6 +96,8 @@ public class reader {
     private int preference;
     
     private double [][] wageCost = new double [50][50];
+    
+    private double wageCost2;
        
     public reader(){
         
@@ -380,11 +382,11 @@ public class reader {
         }
     }
     
-    public void readWages2(int r, int k){
+    public double readWages2(int r, int k){
         CSVReader reader;
         
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages9hr.csv"));
             //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
@@ -398,16 +400,22 @@ public class reader {
              lineNumber ++; 
             
            }
-        for (int i = 0; i < 16; i++){
-            for (int j = 0; j < 3; j++){
+        
+        wageCost2 = Double.parseDouble(lines[r][k]);
+        
+        /*for (int i = 0; i < 9; i++){
+            for (int j = 2; j < 4; j++){
                 wageCost[i][j] = Double.parseDouble(lines[r][k]);
                 for()
             }
-        }
+        }*/
         }
         catch (IOException e) {
 			e.printStackTrace();
         }
+        
+        return wageCost2;
+        
     }
     
     public int readPreference(int n, int d, int s, char department){
