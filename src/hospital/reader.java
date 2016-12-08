@@ -60,6 +60,8 @@ public class reader {
     private int [] reqFTERosterType1;
     private int [] reqFTERosterType2;
     
+    private int reqShiftType;
+    
     private double wageType1Early9Week;
     private double wageType1Early9Weekend;
     private double wageType1Day9Week;
@@ -386,8 +388,8 @@ public class reader {
         CSVReader reader;
         
         try{
-            reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages9hr.csv"));
-            //reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages9hr.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\Wages.csv"));
             String[][] lines= new String[1000][1000];
             String [] nextLine;
         int lineNumber = 0;
@@ -453,6 +455,41 @@ public class reader {
             setPreference(Integer.parseInt(lines[line][column]));
             System.out.println(getPreference());
             return preference;
+        }
+        
+        catch (IOException e) {
+			e.printStackTrace();
+        }
+        return -1;
+    }
+    public int readRequirements(int t, int s, char department){
+        this.department = department;
+        CSVReader reader;
+        
+        try{
+            //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Wages.csv"));
+            reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"req.csv"));
+            String[][] lines= new String[1000][1000];
+            String [] nextLine;
+        int lineNumber = 0;
+               
+        while ((nextLine = reader.readNext()) != null) {
+            
+            String[] cells = nextLine[0].split(";");
+            lines[lineNumber] = cells;
+            
+             lineNumber ++; 
+            
+           }
+            int line;
+            int column;
+            
+            column = t;
+            line = s+2;
+            
+            setReqShiftType(Integer.parseInt(lines[line][column]));
+            System.out.println(getReqShiftType());
+            return reqShiftType;
         }
         
         catch (IOException e) {
@@ -1393,7 +1430,14 @@ public class reader {
         this.preference = preference;
     }
      
-    
+   public int getReqShiftType()
+   {
+       return reqShiftType;
+   }
+   public void setReqShiftType(int reqShiftType)
+   {
+       this.reqShiftType = reqShiftType;
+   }
     
     
 }
