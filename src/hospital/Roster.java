@@ -62,8 +62,8 @@ public class Roster {
 	//readCyclicRoster variables
 	private int[][] cyclicRostersType1 ;
 	private int[][] cyclicRostersType2;
-	private int [] reqFTERosterType1;
-	private int [] reqFTERosterType2;
+	private int [] reqFTERosterType1= {1,1,1};
+	private int [] reqFTERosterType2={5,5,4};
 	
 	private int [] minAss = new int[NURSES];								//min number of ass per nurse over complete period (month)
 	private int [] maxAss = new int[NURSES];								//max number of ass per nurse over complete period (month)
