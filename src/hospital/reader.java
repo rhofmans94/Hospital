@@ -166,7 +166,7 @@ public class reader {
         try{
             //reader = new CSVReader(new FileReader("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\Anurse.csv"));
             reader = new CSVReader(new FileReader("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\"+department+"nurse.csv"));
-            String[][] lines= new String[50][50];
+            String[][] lines= new String[100][100];
             String [] nextLine;
         int lineNumber = 0;
                
@@ -182,18 +182,18 @@ public class reader {
             nurses = Integer.parseInt(lines[0][1]);
             nurses1 = Integer.parseInt(lines[1][1]);
             nurses2 = Integer.parseInt(lines[2][1]);
-            //System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
+            System.out.println("totalNurses: "+nurses+" totalType1: "+nurses1+" totalType2: "+nurses2);
             ID = new String [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 ID[i]=lines[(6+i)][0];
-                //System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
+                System.out.println("nurse "+(i+1)+" ID: "+ID[i] );
             }
             employmentRate = new double [(nurses)];
             for (int i=0; i<nurses; i++)
             {
                 employmentRate[i]=Double.parseDouble(lines[(6+i)][15]);
-                //System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
+                System.out.println("nurse "+(i+1)+" employmentrate: "+employmentRate[i]);
             }
                        
             type = new int [(nurses)];
