@@ -164,7 +164,7 @@ public class Roster {
 			userShiftID=s;
 		}
 		// userShiftID error?? (bij hun was da ne gui, heb dat weggedaan
-                System.out.println("userShiftID: " + userShiftID + " and passed through JAVAs: " + shiftCode);
+                //System.out.println("userShiftID: " + userShiftID + " and passed through JAVAs: " + shiftCode);
 		return userShiftID;
 	}
 	
@@ -1669,8 +1669,8 @@ public void procedureBA()
 					for (int s=0;s<numberOfShifts;s++)
 						{
 						scheduled[t][d][s]=0;
-						System.out.println("number of shifts: " +  numberOfShifts + " scheduled: for type "
-						+(t+1) + " on day " + (d+1) + " and usershift: "+ s+  " is " + scheduled[t][d][s]);
+						//System.out.println("number of shifts: " +  numberOfShifts + " scheduled: for type "
+						//+(t+1) + " on day " + (d+1) + " and usershift: "+ s+  " is " + scheduled[t][d][s]);
 						}
 				}
 			}
@@ -1745,9 +1745,9 @@ public void procedureBA()
 					if (countConsec > maxConsecPerShiftType[n][(shiftPreviousDay)] )
 					{
 						violations[2]++; // Sum the number of times the maximum consecutive assignments of the same shift type constraint is violated	
-						System.out.println("CONSTRAINT 2: concerns nurse" + nurseID[n] + 
-						" countConsec: " + countConsec 	+ " compared to max: " + maxConsecPerShiftType[n][(shiftPreviousDay)]
-						+ " results in total of " + violations[2]);
+					//	System.out.println("CONSTRAINT 2: concerns nurse" + nurseID[n] + 
+					//	" countConsec: " + countConsec 	+ " compared to max: " + maxConsecPerShiftType[n][(shiftPreviousDay)]
+					//	+ " results in total of " + violations[2]);
 					}
 					countConsec =0;
 					countConsec++;

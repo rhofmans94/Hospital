@@ -453,7 +453,7 @@ public class reader {
              column = (1+(5*(d)))+(s-1);
             }
             setPreference(Integer.parseInt(lines[line][column]));
-            System.out.println("pref: "+getPreference());
+            //System.out.println("pref: "+getPreference());
             return preference;
         }
         
