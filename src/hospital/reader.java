@@ -444,12 +444,12 @@ public class reader {
                     
             if (s==0) // als free shift, dan moeten we kijken naar de laatste column en niet de eerste
             {
-            line = n+6;
+            line = n+2;
             column = (1+(5*(d)))+(s+4);
             }
             else
             {
-             line = n+6;
+             line = n+2;
              column = (1+(5*(d)))+(s-1);
             }
             setPreference(Integer.parseInt(lines[line][column]));
