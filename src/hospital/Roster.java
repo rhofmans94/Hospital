@@ -121,7 +121,7 @@ public class Roster {
 	
 	//procedurePT
 	private int [][][] resid = new int [TYPES][DAYS][SHIFTS];
-	//printOutput
+	
 	private String textMonthlyRoster;//will show the monthly roster in txt.format
 	private String texttest="";
 	
@@ -415,29 +415,33 @@ public void readCyclicRoster()
             cyclicRostersType2 = new int [numberOfRostersType1+numberOfRostersType2][DAYS];
             reqFTERosterType1 = new int[numberOfRostersType1];
             reqFTERosterType2 = new int [numberOfRostersType1+numberOfRostersType2];
-
-                    
+            int [][] cyclR1 = r.getCyclicRostersType1();
+             int [][] cyclR2 = r.getCyclicRostersType2();        
 		for (int s=0;s<numberOfRostersType1;s++)
 		{
-			
+                    
 			for (int d=0;d<DAYS;d++)
 			{
-                                int [][] cyclR1 = r.getCyclicRostersType1();
+                                System.out.println("shift: "+cyclR1[s][d]);
 				cyclicRostersType1[s][d]=shift[cyclR1[s][d]]; 
-				//System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
-				//		+ " is " + cyclicRostersType1[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
+                                reqFTERosterType1[s]=1;
+				System.out.println("Type 1, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+						+ " is " + cyclicRostersType1[s][d] + " and there are " + reqFTERosterType1[s] + " FTE required.") ;
 			}
 		}
 		
 		for (int s=(numberOfRostersType1);s<(numberOfRostersType1+numberOfRostersType2);s++) 
+                //for (int s=0;s<numberOfRostersType2;s++) 
 		{
-			
+                   
 			for (int d=0;d<DAYS;d++)
 			{
-                                int [][] cyclR2 = r.getCyclicRostersType2();
-				cyclicRostersType2[s][d]=shift[cyclR2[s][d]]; 
-				//System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
-				//		+ " is " + cyclicRostersType2[s][d]+ " and there are " + "reqFTERosterType2[r]" + " FTE required.") ;
+                               
+                                System.out.println("shift: "+cyclR2[s][d]);
+				cyclicRostersType2[s][d]=shift[cyclR2[s][d]];
+                                reqFTERosterType2[s]=1;
+				System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
+						+ " is " + cyclicRostersType2[s][d]+ " and there are " + reqFTERosterType2[s] + " FTE required.") ;
 			}
 		}
 		System.out.println("_________________________end readCyclicRoster_____________________");
@@ -463,13 +467,13 @@ public void iterate(){
 		nurseDoesFinal= new int[numberOfNurses];
 		int minimum=9999999;
 		
-		while (count1!=8){ //stond op 28
+		while (count1!=1){ //stond op 28
 			System.out.println("\n\n\n\n\t(\\(\\ \n\t( -.-) \n\to__('')('')\n\tFirst loop trial " + (count1+1));
 			procedureBA();
 			count2=0;
 			System.out.println(PTHTDetails);
-			
-			while (count2!=5){//stond op 7 
+                  			
+			while (count2!=1){//stond op 7 
 				//evaluateSolution();
 				horizontalSwapping();
 				System.out.println("AFTER HORIZONTAM");
@@ -514,11 +518,12 @@ public void iterate(){
 		}
                         System.out.println("xxxx xxxx xxxx finalSolution xxxx xxxx xxxx");
                 //NOG METHODES!!!        
-		//printOutputFinal();
-		//evaluateSolutionFinal();
+		printOutput();
+		evaluateSolutionFinal();
                 //excelResult(); 
                         System.out.println("EXCEL ---> GA GAAN ZIEN IN UW WORKSPACE VOOR DE OUTPUT!!!");
 	}
+
 
 public void procedureBA()
 	{
@@ -542,6 +547,8 @@ public void procedureBA()
 							nurseDoes[n]=nurseDoesBin[n];
 							for (int d=0;d<DAYS;d++){
 								nurseSchedule[n][d]=nurseScheduleBin[n][d];
+                                                                System.out.println("nurseScheduleBin: "+nurseScheduleBin[n][d]);
+                                                                System.out.println("nurseSchedule: "+nurseSchedule[n][d]);
 								}
 							}
 						}
@@ -585,8 +592,9 @@ public void procedureBA()
 			assignedNursesBin.add(n1);
 			nurseDoesBin[n1]=r;
 			for(int d=0; d<DAYS;d++){
-                            //System.out.println("cyclicRosterType1= " +cyclicRostersType1[r][d]);
+                                System.out.println("cyclicRosterType1= " +cyclicRostersType1[r][d]);
 				nurseScheduleBin[n1][d]=cyclicRostersType1[r][d];
+                                System.out.println("nurseScheduleBin: "+nurseScheduleBin[n1][d]);
 			}
 			if(nurseEmploymentRate[n1]!=1.0){
 				sharedRosterBin.add(r);
@@ -610,7 +618,9 @@ public void procedureBA()
                                 System.out.println("assignedNurse 2: "+n2);
 				nurseDoesBin[n2]=r;
 				for(int d=0; d<DAYS;d++){
+                                    System.out.println("cyclicRosterType2= " +cyclicRostersType2[r][d]);
 					nurseScheduleBin[n2][d]=cyclicRostersType1[r][d];
+                                        System.out.println("nurseScheduleBin: "+nurseScheduleBin[n2][d]);
 				}
 				vlag=false;
 				}
@@ -660,7 +670,9 @@ public void procedureBA()
 				nurseDoesBin[nursesR2Bin[n1]]=r;
 				System.out.println("Nurse: " + (nursesR2Bin[n1]+1) +" does roster " + (r+1));
 				for(int d=0; d<DAYS;d++){
+                                    System.out.println("cyclicRosterType2= " +cyclicRostersType2[r][d]);
 					nurseScheduleBin[nursesR2Bin[n1]][d]=cyclicRostersType2[r][d];
+                                        System.out.println("nurseScheduleBin: "+nurseScheduleBin[n1][d]);
 				}
 				if(nurseEmploymentRate[nursesR2Bin[n1]]!=1.0){
 					sharedRosterBin.add(r);
@@ -771,6 +783,7 @@ public void procedureBA()
 		int violations=0;
 		for (int n=0; n<numberOfNurses;n++){System.out.println("nurse " + nurseID[n] + ", Roster " + (nurseDoesBin[n]+1)) ; //komt er zo iets in nurseID? Dit was met een database
 			for (int d=0;d<DAYS;d++){
+                                System.out.println("2 nurseScheduleBin "+nurseScheduleBin[n][d]);
 				System.out.println("Day " +(d+1)+ " Usershift " + shiftDecoding(nurseScheduleBin[n][d]) +  " penalty: " + re.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d]),department) );
 				violations+= re.readPreference(n, d, shiftDecoding(nurseScheduleBin[n][d]),department);
 			}
@@ -1050,6 +1063,7 @@ public void procedureBA()
 			if(!type1NurseAssignedToType2Roster.contains(n)){	//enkel die type1 nurses die type1 roster doen
 				for(int d=0;d< DAYS;d++){ //al hun toegewezen shifts nagaan (met TOTALDAYS= 28) 
 						int shift = nurseSchedule[n][d];//javashift
+                                                System.out.println("shift: "+shift);
 						int prefShiftNurse=r.readPreference(n, d, shiftDecoding(shift),department);
 						if(prefShiftNurse >= 10){ //als de nurse een shift heeft met een preferentie boven 10   
 							//welke shiften mag de nurse nog doen?
@@ -1098,6 +1112,7 @@ public void procedureBA()
 		for(int n=0;n<nursesR2.length;n++){ // alle nurses nagaan van die preferences 
 			for(int d=0;d< DAYS;d++){ //al hun toegewezen shifts nagaan (met TOTALdS= 28) 
 				int shift = nurseSchedule[nursesR2[n]][d];
+                                System.out.println("shift: "+shift);
 				int prefShiftNurse=r.readPreference(nursesR2[n], d, shiftDecoding(shift),department);
 				if(prefShiftNurse >= 10){ //als de nurse een shift heeft met een preferentie boven 10
 					//welke shiften mag de nurse nog doen?
@@ -1161,7 +1176,7 @@ public void procedureBA()
 		   				if(prefShiftNurse>=15 ){
 		   					int low =10; 
 		   					for (int d = 0; d < DAYS; d++){ 
-		   						System.out.println("Day: " + (d+1) + " has shift " + nurseSchedule[n][d]);
+		   						System.out.println("! Day: " + (d+1) + " has shift " + nurseSchedule[n][d]);
 		   						if(nurseSchedule[n][d]==numberOfShifts-1){
 	   								for(int s=0;s<numberOfShifts-1;s++){
 		   					   			
@@ -1178,7 +1193,7 @@ public void procedureBA()
 		   							}
 		   						}
 		   					}
-		   					if(vlag){
+		   					if(vlag=true){
 		   						loadScheduled();//scheduled[][][] opnieuw vullen
 		   						output=("SWITCHED Day " + (day+1) + " S" + shiftDecoding(shift) + "("+ prefShiftNurse 
 				   							+ ")\tDay " + (dayLowPref+1)+ " S" + shiftDecoding(nurseSchedule[n][dayLowPref]) + "("
@@ -1713,6 +1728,7 @@ public void procedureBA()
 				
 				int shiftCurrentDay = nurseSchedule[n][d];
 				int shiftPreviousDay = nurseSchedule[n][d-1];
+                               
 				//System.out.println("SUPPORT: nurse " + nurseID[n] + " shift day " + (d+1) + " = " +cyclicRostersType1[n][d] 
 				//		+" day before " + d + " =  " +cyclicRostersType1[n][d-1] );
 				
@@ -1784,7 +1800,8 @@ public void procedureBA()
 				{
 					for(int t=0; t<TYPES;t++)
 					{
-						a=scheduled[t][d][s];
+                                            System.out.println("schedule: "+scheduled[t][d][s]);
+                                            a=scheduled[t][d][s];
 						
 						if(a<r.readRequirements(t, shift[s],department))
 							{textConstraints+=("There are too few nurses of type "+ (t+1) + " in shift " + s + " on day " + (d+1)
@@ -1806,6 +1823,51 @@ public void procedureBA()
 					JOptionPane.WARNING_MESSAGE);*/
 		}
         
+         public void evaluateSolutionFinal()
+		{
+                    reader r = new reader();
+                        for (int i= 0; i<20;i++)
+			violations[i]=0;
+			
+			loadScheduled();
+			
+			textConstraints=("The total preference score is " + violations[0]);
+			textConstraints+=("\n\nThe constraint 'maximum number of consecutive working days' is violated " +violations[1]+" times.");
+			textConstraints+=("\nThe constraint 'maximum number of consecutive working days per shift type' is violated " + violations[2] +" times.");
+			textConstraints+=("\nThe constraint 'minimum number of assignments' is violated "+ violations[3] +" times." );
+			textConstraints+=("\nThe constraint 'maximum number of assignments' is violated " + violations[4] + " times.");
+		
+			textConstraints+=("\n\nThe staffing requirements are violated as follows:\n");
+			for (int d = 0;d<DAYS;d++)
+			{
+				for (int s =1; s<numberOfShifts;s++ )
+				{
+					for(int t=0; t<TYPES;t++)
+					{
+						a=scheduled[t][d][s];
+						
+						if(a<r.readRequirements(t, shift[s],department))
+							{textConstraints+=("There are too few nurses of type "+ (t+1) + " in shift " + s + " on day " + (d+1)
+									+ " : " + a + " < " + r.readRequirements(t, shift[s],department) + ".\n");
+							kappa++;
+							}
+						else if (a>r.readRequirements(t, shift[s],department))
+							textConstraints+=("There are too many nurses of type "+ (t+1) +" in shift " + s + " on day " + (d+1)
+									+ " : " + a + " > " + r.readRequirements(t, shift[s],department) + ".\n");
+					}
+				}
+			}
+			/*JTextArea textArea = new JTextArea(textConstraints);
+			JScrollPane scrollPane = new JScrollPane(textArea);  
+			textArea.setLineWrap(true);  
+			textArea.setWrapStyleWord(true); 
+			scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+			JOptionPane.showMessageDialog(null, scrollPane, "VIOLATIONS",  
+					JOptionPane.WARNING_MESSAGE);*/
+                        
+                        System.out.println("evaluateSolutionFinal: ");
+                        System.out.println(textConstraints);
+		}
         
         
         public void costs()
