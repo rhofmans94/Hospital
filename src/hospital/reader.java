@@ -314,7 +314,7 @@ public class reader {
 			//reqFTERosterType1[s]= Integer.parseInt(lines[s+4]);
 			for (int d=0;d<DAYS;d++)
 			{
-				cyclicRostersType1[s][d]=Integer.parseInt(lines[s+3][d]); 
+				cyclicRostersType2[s][d]=Integer.parseInt(lines[s+3][d]); 
 				//System.out.println("Type 2, Cyclic roster : " + (s+1)+  " for department " +department+ " on day " + (d+1) 
 				//		+ " is " + getCyclicRostersType1()[s][d] + " and there are " + "reqFTERosterType1[r]" + " FTE required.") ;
 			}

@@ -1380,13 +1380,13 @@ public void procedureBA()
 	{
 			if (shift==0)//als de shift waarmee men wilt wisselen een early shift is dan 
 			{
-				if(day==0 || nurseSchedule[nurse][day-1]==0|| nurseSchedule[nurse][day-1]==5)//de vorige dag E of F
+				if(day==0 || nurseSchedule[nurse][day-1]==0|| nurseSchedule[nurse][day-1]==3)//de vorige dag E of F
 					return true; //alle shiften zijn toegelaten op de volgende dag
 				else return false; 
 			}
-		    else if(shift==1) //als de shift een DAY1 shift is dan 
+		    /*else if(shift==1) //als de shift een DAY1 shift is dan 
 			{
-				if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1|| nurseSchedule[nurse][day-1]==5)//de vorige dag E,D1,F toegelaten
+				if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1|| nurseSchedule[nurse][day-1]==4)//de vorige dag E,D1,F toegelaten
 				{
 					if(day==DAYS-1 || nurseSchedule[nurse][day+1]!=0) //einde vd maand of de dag nadien verschillend van de early
 						return true; 
@@ -1394,36 +1394,36 @@ public void procedureBA()
 				}
 				else return false; 
 					
-			}
-		    else if(shift==2)//als de shift een DAY2 is 
+			}*/
+		    /*else if(shift==2)//als de shift een DAY2 is 
 		    {
-		    	if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1 || nurseSchedule[nurse][day-1]==2|| nurseSchedule[nurse][day-1]==5)//vorige dag is E,D1,D2,F toegelaten
+		    	if(day==0 || nurseSchedule[nurse][day-1]==0 || nurseSchedule[nurse][day-1]==1 || nurseSchedule[nurse][day-1]==2|| nurseSchedule[nurse][day-1]==4)//vorige dag is E,D1,D2,F toegelaten
 				{
 					if(day==DAYS-1 || nurseSchedule[nurse][day+1]==2 || nurseSchedule[nurse][day+1]==3|| nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of de dag nadien 
 						return true; 
 					else return false; 
 				}
 		    	else return false; 
-		    }
-		    else if(shift==3)//als de shift een L is
+		    }*/
+		    else if(shift==1)//als de shift een L is
 		    {
-		    	if(day==0 || nurseSchedule[nurse][day-1]!=4)//vorige dag is E,D1,D2,L,F toegelaten (dus alles behalve ne night)
+		    	if(day==0 || nurseSchedule[nurse][day-1]!=2)//vorige dag is E,D1,D2,L,F toegelaten (dus alles behalve ne night)
 				{
-					if(day==DAYS-1 || nurseSchedule[nurse][day+1]==3 ||  nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of de dag nadien 
+					if(day==DAYS-1 || nurseSchedule[nurse][day+1]==1 ||  nurseSchedule[nurse][day+1]==2|| nurseSchedule[nurse][day+1]==3) //einde vd maand of de dag nadien 
 						return true; 
 					else return false; 
 				}
 		    	else return false; 
 		    }	
-		    else if(shift==4)//shift N
+		    else if(shift==2)//shift N
 		    {
 		    	//vorige dag is alles toegelaten
-		    	if(day==DAYS-1 || nurseSchedule[nurse][day+1]==4|| nurseSchedule[nurse][day+1]==5) //einde vd maand of N & F toegelaten 
+		    	if(day==DAYS-1 || nurseSchedule[nurse][day+1]==2|| nurseSchedule[nurse][day+1]==3) //einde vd maand of N & F toegelaten 
 					return true; 
 		    	else return false; 
 				
 		    }
-		    else if(shift==5)//shift F
+		    else if(shift==3)//shift F
 		    	return true; //alles mag de dag ervoor en de dag nadien
 		    else return false; 
 	}
