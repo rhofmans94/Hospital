@@ -474,7 +474,28 @@ public void iterate(){
 			System.out.println(PTHTDetails);
                   			
 			while (count2!=1){//stond op 7 
-				//evaluateSolution();
+				//
+                                
+                                
+
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                evaluateSolution();
 				horizontalSwapping();
 				System.out.println("AFTER HORIZONTAM");
 				//evaluateSolution();
@@ -1364,7 +1385,7 @@ public void procedureBA()
 		// doorgegeven type (nurseType[]) is 1 of 2!!
 		if (type1NurseAssignedToType2Roster.contains(nurse)){
 			if (scheduled[type][day][sh]>r.readRequirements(type,shift[sh],department)){
-				return (scheduled[type][day][sh]-r.readRequirements(type,shift[sh],department));
+				return (scheduled[type][day][sh]-r.readRequirements(type ,shift[sh],department));
 				}
 			else return 0;
 			}
@@ -1633,8 +1654,8 @@ public void procedureBA()
 			
 		CSVWriter writer;
         try{
-            //writer = new CSVWriter(new FileWriter("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\test.csv"));
-            writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\test"+department+".csv"));
+            writer = new CSVWriter(new FileWriter("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\test"+department+".csv"));
+            //writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\test"+department+".csv"));
             String[][] lines= new String[100][100];
             //int lineNumber = 3;
             
