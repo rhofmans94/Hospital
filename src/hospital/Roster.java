@@ -734,7 +734,7 @@ public void procedureBA()
 		System.out.println("SharedRosterBin (" + sharedRosterBin.size() +"):" + sharedRosterBin.toString());
 		if(assignedNursesBin.size()>numberOfNurses) break;
 		}
-		//penalty=procedurePT();
+		penalty=procedurePT();
 		PTHTDetailsBin+=("\n>>>>>>>>>>>>>>>TOTAL PENALTY: " + penalty);
 		return penalty;
 	}
@@ -1003,7 +1003,7 @@ public void procedureBA()
 			int prefShiftNurse,int prefShiftOtherNurse,
 			int prefShiftNurseForOtherShift, int prefShiftOtherNurseForShift)
 	{
-			if(day!=0 && otherShift!=numberOfShifts-1 && shift!=numberOfShifts-1){ //de shiften verschillend van de free shift!
+			if(otherShift!=numberOfShifts-1 && shift!=numberOfShifts-1){ //de shiften verschillend van de free shift!
 				if(prefShiftOtherNurseForShift<=prefShiftOtherNurse//is de preferentie voor de nieuwe shift groter dan de huidige shift
 					 && prefShiftOtherNurseForShift<10 //wilt de andere nurse die shift doen
 					  &&prefShiftNurseForOtherShift<10) //wilt de nurse die andere shift doen
