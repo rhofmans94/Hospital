@@ -257,7 +257,7 @@ public class Roster {
                         readRequirements(department,s,shift[s]);
 			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}				
-		if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] == 0))			// If the shifts start at 9 am we define a day shift (and there is no other shift defined as a day shift)
+		/*if ((startShift[s] >= 9) && (startShift[s] < 12) && (req[d][1] == 0))			// If the shifts start at 9 am we define a day shift (and there is no other shift defined as a day shift)
 		{	
 			shift[s] = 1;
                         readRequirements(department,s,shift[s]);
@@ -268,14 +268,14 @@ public class Roster {
 			shift[s] = 2;
                         readRequirements(department,s,shift[s]);
 			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
-		}			
+		}*/		
 		if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] == 0))		// If the shifts start at 12 am, 3 pm or 6 pm we define a late shift (and there is no other shift defined as a late shift)
 		{	
-			shift[s] = 2;
+			shift[s] = 1;
                         readRequirements(department,s,shift[s]);
 			//System.out.println("usershift: " + s + " that starts at: " + startShift[s]+ " is now java shift: " + shift[s]);
 		}
-		*/else if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] != 0))
+		else if ((startShift[s] >= 12) && (startShift[s] < 21) && (req[d][2] != 0))
 		{			
 			shift[s] = 2;
                         readRequirements(department,s,shift[s]);
@@ -1847,18 +1847,31 @@ public void procedureBA()
          public void evaluateSolutionFinal()
 		{
                     reader r = new reader();
+                    String [] total = new String [500];
                         for (int i= 0; i<20;i++)
 			violations[i]=0;
 			
 			loadScheduled();
 			
 			textConstraints=("The total preference score is " + violations[0]);
+                        total[1]= "The total preference score is ;" + violations[0];
 			textConstraints+=("\n\nThe constraint 'maximum number of consecutive working days' is violated " +violations[1]+" times.");
-			textConstraints+=("\nThe constraint 'maximum number of consecutive working days per shift type' is violated " + violations[2] +" times.");
-			textConstraints+=("\nThe constraint 'minimum number of assignments' is violated "+ violations[3] +" times." );
-			textConstraints+=("\nThe constraint 'maximum number of assignments' is violated " + violations[4] + " times.");
-		
-			textConstraints+=("\n\nThe staffing requirements are violated as follows:\n");
+			total[2]= "The constraint 'maximum number of consecutive working days' is violated ;" +violations[1]+"; times.";
+                        textConstraints+=("\nThe constraint 'maximum number of consecutive working days per shift type' is violated " + violations[2] +" times.");
+			total[3]="The constraint 'maximum number of consecutive working days per shift type' is violated ;" + violations[2] +"; times.";
+                        textConstraints+=("\nThe constraint 'minimum number of assignments' is violated "+ violations[3] +" times." );
+			total[4]="The constraint 'minimum number of assignments' is violated ;"+ violations[3] +"; times." ;
+                        textConstraints+=("\nThe constraint 'maximum number of assignments' is violated " + violations[4] + " times.");
+                        total[5]="The constraint 'maximum number of assignments' is violated ;" + violations[4] + "; times.";
+			                        
+                        total [7]="CostType1 ;"+costType1;
+                        total [8]="CostType2 ;"+costType2;
+                        total [9]="Total cost ;"+costTotal;
+                        
+                        textConstraints+=("\n\nThe staffing requirements are violated as follows:\n");
+                        total [11]="The staffing requirements are violated as follows:";
+                        
+                        int line = 13;
 			for (int d = 0;d<DAYS;d++)
 			{
 				for (int s =1; s<numberOfShifts;s++ )
@@ -1871,11 +1884,17 @@ public void procedureBA()
 							{textConstraints+=("There are too few nurses of type "+ (t+1) + " in shift " + s + " on day " + (d+1)
 									+ " : " + a + " < " + r.readRequirements(t, shift[s],department) + ".\n");
 							kappa++;
-							}
+                                                        total[line]="There are too few nurses of type ;"+ (t+1) + "; in shift ;" + s + "; on day ;" + (d+1)
+									+ "; : ;" + a + "; < ;" + r.readRequirements(t, shift[s],department);
+							line ++;
+                                                        }
 						else if (a>r.readRequirements(t, shift[s],department))
 							textConstraints+=("There are too many nurses of type "+ (t+1) +" in shift " + s + " on day " + (d+1)
 									+ " : " + a + " > " + r.readRequirements(t, shift[s],department) + ".\n");
-					}
+                                                         total[line]="There are too many nurses of type ;"+ (t+1) +"; in shift ;" + s + "; on day ;" + (d+1)
+									+ "; : ;" + a + "; > ;" + r.readRequirements(t, shift[s],department);               
+                                                         line ++;
+                                        }
 				}
 			}
 			/*JTextArea textArea = new JTextArea(textConstraints);
@@ -1888,7 +1907,47 @@ public void procedureBA()
                         
                         System.out.println("evaluateSolutionFinal: ");
                         System.out.println(textConstraints);
+                        
+                        CSVWriter writer;
+        try{
+            //writer = new CSVWriter(new FileWriter("C:\\Users\\julie.MATTIS\\OneDrive\\Documenten\\AOR\\EvaluateSolution"+department+".csv"));
+            writer = new CSVWriter(new FileWriter("C:\\Users\\Ruth Hofmans\\Desktop\\input example\\EvaluateSolution"+department+".csv"));
+            String[][] lines= new String[100][100];
+            //int lineNumber = 3;
+            
+            for (int n=0; n<numberOfNurses;n++)
+            {
+                lines[n][0] = nurseID[n];
+                for (int d=0; d<DAYS;d++)
+                {
+                    int shift = nurseSchedule[n][d];
+                    int dag = d+1;
+                    lines[n][dag]=Integer.toString(shiftDecoding(shift)); //ophalen shift van die nurse!
+                    }
+                  
+                }
+               
+  
+         
+         java.util.List<String[]> data = new ArrayList<String[]>();
+         for (int i=0;i<total.length;i++)
+         {
+          String total2 = new String();   
+          total2 += total[i];
+             
+            data.add(new String[]{total2});
+         
+         }
+         writer.writeAll(data);
+         writer.close();
+            
+               
+     }
+         catch (IOException e) {
+			e.printStackTrace();
+        }
 		}
+
         
         
         public void costs()
